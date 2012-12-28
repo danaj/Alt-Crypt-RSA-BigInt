@@ -1,5 +1,5 @@
 NAME
-    Alt::Crypt::RSA::BigInt - Rewrite of Crypt::BigInt
+    Alt::Crypt::RSA::BigInt - Rewrite of Crypt::RSA
 
 DESCRIPTION
 
