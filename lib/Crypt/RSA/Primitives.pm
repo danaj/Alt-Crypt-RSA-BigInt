@@ -66,9 +66,9 @@ sub core_decrypt {
         #my($p, $q, $d) = ($key->p, $key->q, $key->d);
         my $p = $key->p;
         my $q = $key->q;
-        $key->u  = $p->copy->bmodinv($q) unless defined $key->u;
-        $key->dp = $d % ($p-1)           unless defined $key->dp;
-        $key->dq = $d % ($q-1)           unless defined $key->dq;
+        $key->u ($p->copy->bmodinv($q)) unless defined $key->u;
+        $key->dp($d % ($p-1)          ) unless defined $key->dp;
+        $key->dq($d % ($q-1)          ) unless defined $key->dq;
         my $u  = $key->u;
         my $dp = $key->dp;
         my $dq = $key->dq;

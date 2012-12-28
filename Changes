@@ -1,6 +1,11 @@
 Revision history for Perl module Alt::Crypt::RSA::BigInt
 
-0.01 December 2012
+0.02 xx December 2012
+
+  - Fix a decrypt issue setting keys
+
+
+0.01 28 December 2012
 
   - Add test for h2osp, pss sign and verify with salt.
 
