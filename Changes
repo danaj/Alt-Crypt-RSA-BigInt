@@ -1,0 +1,42 @@
+Revision history for Perl module Alt::Crypt::RSA::BigInt
+
+0.01 December 2012
+
+  - Add test for h2osp, pss sign and verify with salt.
+
+  - Faster versions of some of the helper functions.
+
+  - Switch from Digest::SHA1 to Digest::SHA, and add SHA256.
+
+  - The following Crypt::RSA 1.99 defects have been fixed or made irrelevant
+    due to no longer using Math::Pari:
+
+     RT 52689  consider moving Crypt::RSA to Math::BigInt?
+     RT 76655  Version 1.99's META.yml says version is 1.97
+     RT 63007  Move to later version of Math-PARI
+     RT  4877  Crypt::RSA test 11 fails with a segmentation fault
+     RT 61392  Crypt::RSA::Key::Private::check not checking that q is an integer
+     RT 64883  Make errstr from check after write more intuitive
+     RT 45533  Crypt::RSA bug in mgf1 function
+
+    These fixable possible defects remain, but should be resoved soon.
+
+     RT 69376  Bug in Crypt::RSA::Key::Private::SSH serialize function
+
+    as well as these that aren't clear:
+
+     RT 50356  Crypt-RSA-1.99
+     RT 59923  changing the passphrase on key
+
+  - Makefile.PL will look for GMP and Pari, and install the Math::BigInt::GMP
+    or Math::BigInt::Pari modules if possible.  It complains otherwise, but
+    everything should still work -- it just runs really slow.
+
+  - Completely removed Pari.
+
+  - Replaced modules:
+
+       Crypt::Random  =>  Bytes::Random::Secure
+       Crypt::Primes  =>  Math::Prime::Util
+
+  - Started with Vipul's Crypt::RSA.

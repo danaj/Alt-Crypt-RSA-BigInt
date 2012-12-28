@@ -1,0 +1,22 @@
+
+ - tests using Test::More
+
+ - don't use FindBin
+
+ - SHA 384 and 512
+ - tests for SHA 384/512
+
+ - Should we be concerned about deserialize doing a string eval on the input,
+   especially if that input came from some disk file they gave us in read()?
+
+ - Make it work with 5.6.2.  Some issues:
+
+    - namespace::clean and its dependencies have moved on, so older versions
+      of each would have to be installed.
+
+    - Crypt::Random::Source has "use 5.008" lines in numerous places.  I'm not
+      convinced it really needs 5.8, but it won't currently build without it.
+
+    - Math::Prime::Util has lots of issues with 5.6.2 on 64-bit machines, since
+      5.6.2 can't represent integers in the range 2^50 to 2^64.  This is just
+      fundamentally broken, and it's a _huge_ pain to work around.
