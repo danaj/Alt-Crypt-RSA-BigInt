@@ -2,6 +2,7 @@ inc/Devel/CheckLib.pm
 LICENSE
 Changes
 Changes.old
+lib/Alt/Crypt/RSA/BigInt.pm
 lib/Crypt/RSA.pm
 lib/Crypt/RSA/DataFormat.pm
 lib/Crypt/RSA/Debug.pm
@@ -23,6 +24,7 @@ TODO
 t/00-errorhandler.t
 t/01-i2osp.t
 t/02-os2ip.t
+t/02a-h2osp.t
 t/03-random_octet.t
 t/04-octet_xor.t
 t/05-primitives.t
@@ -36,4 +38,5 @@ t/12-versioning.t
 t/13-es-pkcs1v15.t
 t/14-ss-pkcs1v15.t
 t/15-benchmark.t
+t/16-serialize.t
 xt/rt-69376.pl
