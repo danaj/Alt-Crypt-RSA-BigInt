@@ -1,4 +1,7 @@
-#!/usr/bin/perl -sw
+package Crypt::RSA;
+use strict;
+use warnings;
+
 ##
 ## Crypt::RSA - Pure-perl implementation of RSA encryption/signing
 ##              algorithms.
@@ -6,13 +9,7 @@
 ## Copyright (c) 2000-2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: RSA.pm,v 1.48 2001/09/25 12:44:55 vipul Exp $
 
-package Crypt::RSA;
-use FindBin qw($Bin);
-use lib "$Bin/../../lib";
-use strict;
 use base 'Class::Loader';
 use base 'Crypt::RSA::Errorhandler';
 use Crypt::RSA::Key;
@@ -205,6 +202,9 @@ sub blocksize {
 
 1; 
 
+=pod
+
+=encoding utf8
 
 =head1 NAME
 
@@ -528,7 +528,7 @@ Vipul Ved Prakash, E<lt>mail@vipul.netE<gt>
 =head1 ACKNOWLEDGEMENTS
 
 Thanks to Ilya Zakharevich for help with Math::Pari, Benjamin Trott for
-several patches including SSH key support, Genèche Ramanoudjame for
+several patches including SSH key support, GenÃ¨che Ramanoudjame for
 extensive testing and numerous bug reports, Shizukesa on #perl for
 suggesting the error handling method used in this module, and Dave Paris
 for good advice.
@@ -552,8 +552,7 @@ Crypt::RSA::Primitives(3), Crypt::RSA::DataFormat(3),
 Crypt::RSA::Errorhandler(3), Crypt::RSA::Debug(3),
 Crypt::CBC(3), Crypt::Blowfish(3),
 Tie::EncryptedHash(3), Convert::ASCII::Armour(3),
-Class::Loader(3), crypt-rsa-interoperability(3),
-crypt-rsa-interoperability-table(3),
+Class::Loader(3),
 Math::Prime::Util, Bytes::Random::Secure.
 
 =head1 REPORTING BUGS

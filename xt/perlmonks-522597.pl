@@ -26,6 +26,7 @@ my ($public, $private) = $keychain->keygen (
 my $public_str = $public->save;
 my $private_str = $private->save;
 
+print "\n";
 print "Public encrypting_key: ".$public->encrypting_key ."\n";
 print "Private encrypting_key: ".$private->encrypting_key ."\n";
 
@@ -51,3 +52,11 @@ my $plaintext = $pgp->decrypt (
                               ) || die $pgp->errstr();
 
 print "plaintext: $plaintext\n";
+
+
+sub gotsig { my $sig = shift; die "Die because SIG$sig\n"; }
+END {
+  unlink 'private.pgp' if -e 'private.pgp';
+  unlink 'public.pgp' if -e 'public.pgp';
+}
+

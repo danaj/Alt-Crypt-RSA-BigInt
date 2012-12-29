@@ -1,15 +1,13 @@
-#!/usr/bin/perl -sw
-##
+package Crypt::RSA::ES::OAEP; 
+use strict;
+use warnings;
+
 ## Crypt::RSA::ES::OAEP 
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: OAEP.pm,v 1.24 2001/06/22 23:27:37 vipul Exp $
 
-package Crypt::RSA::ES::OAEP; 
-use strict;
 use base 'Crypt::RSA::Errorhandler';
 use Bytes::Random::Secure  qw/random_bytes/;
 use Crypt::RSA::DataFormat qw(bitsize os2ip i2osp octet_xor mgf1 octet_len);

@@ -1,15 +1,13 @@
-#!/usr/bin/perl -sw
-##
+package Crypt::RSA::Key::Private::SSH::Buffer;
+use strict;
+use warnings;
+
 ## Crypt::RSA::Key::Private::SSH
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: SSH.pm,v 1.1 2001/05/20 23:37:47 vipul Exp $
 
-package Crypt::RSA::Key::Private::SSH::Buffer;
-use strict;
 use Crypt::RSA::DataFormat qw( os2ip bitsize i2osp );
 use Data::Buffer;
 use base qw( Data::Buffer );

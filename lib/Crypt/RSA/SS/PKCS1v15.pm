@@ -1,20 +1,18 @@
-#!/usr/bin/perl -sw
-##
+package Crypt::RSA::SS::PKCS1v15;
+use strict;
+use warnings;
+
 ## Crypt::RSA::SS:PKCS1v15
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: PKCS1v15.pm,v 1.6 2001/06/22 23:27:38 vipul Exp $
 
-package Crypt::RSA::SS::PKCS1v15;
-use strict;
 use base 'Crypt::RSA::Errorhandler';
 use Crypt::RSA::DataFormat qw(octet_len os2ip i2osp h2osp);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug qw(debug);
-use Digest::SHA qw(sha1 sha256 sha384 sha512);
+use Digest::SHA qw(sha1 sha224 sha256 sha384 sha512);
 use Digest::MD5 qw(md5);
 use Digest::MD2 qw(md2);
 
@@ -31,6 +29,7 @@ sub new {
   MD2   =>[\&md2,   "30 20 30 0c 06 08 2a 86 48 86 f7 0d 02 02 05 00 04 10"],
   MD5   =>[\&md5,   "30 20 30 0c 06 08 2a 86 48 86 f7 0d 02 05 05 00 04 10"],
   SHA1  =>[\&sha1,  "30 21 30 09 06 05 2b 0e 03 02 1a 05 00 04 14"],
+  SHA224=>[\&sha224,"30 2d 30 0d 06 09 60 86 48 01 65 03 04 02 04 05 00 04 1c"],
   SHA256=>[\&sha256,"30 31 30 0d 06 09 60 86 48 01 65 03 04 02 01 05 00 04 20"],
   SHA384=>[\&sha384,"30 41 30 0d 06 09 60 86 48 01 65 03 04 02 02 05 00 04 30"],
   SHA512=>[\&sha512,"30 51 30 0d 06 09 60 86 48 01 65 03 04 02 03 05 00 04 40"],
@@ -110,6 +109,10 @@ sub encode {
 
     # http://rfc-ref.org/RFC-TEXTS/3447/chapter9.html
     # Should be emlen - Tlen - 3, and em = chr(0) . chr(1) . $PS ....
+    # http://www.faqs.org/rfcs/rfc2313.html says the same thing.  We seem to
+    # be missing a zero byte at the front and put an extra FF in PS instead.
+    # See: http://osdir.com/ml/mozilla.crypto/2005-05/msg00300.html
+    # for a little bit of info on how some of this came about.
     my $H = $hashfunc->($M);
     my $alg = h2osp($digestinfo);
 
@@ -180,7 +183,8 @@ Constructor.   Takes a hash as argument with the following key:
 =item B<Digest> 
 
 Name of the Message Digest algorithm. Three Digest algorithms are
-supported: MD2, MD5, SHA1, SHA256, SHA384, and SHA512. Digest defaults to SHA1.
+supported: MD2, MD5, SHA1, SHA224, SHA256, SHA384, and SHA512.
+Digest defaults to SHA1.
 
 =back 
 

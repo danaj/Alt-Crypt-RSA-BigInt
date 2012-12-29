@@ -1,8 +1,16 @@
 Revision history for Perl module Alt::Crypt::RSA::BigInt
 
-0.02 xx December 2012
+0.02 28 December 2012
 
   - Fix a decrypt issue setting keys
+
+  - Add SHA224 support
+
+  - Added strict and warnings to all .pm files.
+
+  - Converted RSA.pm to UTF-8 and added POD directive
+
+  - Make pretty maurer prime generation output with Verbosity.
 
 
 0.01 28 December 2012

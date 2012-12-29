@@ -23,3 +23,11 @@
 
  - There are, in my opinion, too many dependencies.  Installing this on a
    Cygwin system results in 49 dependencies installed, taking over a half hour.
+
+ - The test suites do almost no failure testing.  Use Devel::Cover to see all
+   the failure cases that aren't covered.
+
+ - Setting Verbosity for key generation now makes pretty output, but the
+   last newline is missing.  Need to patch Math::Prime::Util to add this.
+
+ - Look into allowing other SHA hashes for PSS and OAEP.

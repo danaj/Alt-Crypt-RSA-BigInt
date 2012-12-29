@@ -1,15 +1,13 @@
-#!/usr/bin/perl -sw
-##
+package Crypt::RSA::Key::Private;
+use strict; 
+use warnings;
+
 ## Crypt::RSA::Key::Private 
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: Private.pm,v 1.15 2001/09/25 14:11:22 vipul Exp $
 
-package Crypt::RSA::Key::Private;
-use strict; 
 use vars qw($AUTOLOAD $VERSION);
 use base 'Crypt::RSA::Errorhandler';
 use Tie::EncryptedHash; 

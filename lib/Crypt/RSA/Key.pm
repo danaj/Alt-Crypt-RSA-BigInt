@@ -1,15 +1,13 @@
-#!/usr/bin/perl -sw
-##
+package Crypt::RSA::Key; 
+use strict;
+use warnings;
+
 ## Crypt::RSA::Keys
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: Key.pm,v 1.13 2001/05/25 00:20:40 vipul Exp $
 
-package Crypt::RSA::Key; 
-use strict;
 use base 'Class::Loader';
 use base 'Crypt::RSA::Errorhandler';
 use Math::Prime::Util      qw(prime_set_config random_maurer_prime);
@@ -58,7 +56,7 @@ sub generate {
         my $verbosity = $params{Verbosity} || 0;
 
         prime_set_config( irand => sub { unpack("L", random_bytes(4)) } );
-        #prime_set_config( verbose=>3 );
+        prime_set_config( verbose => 3 ) if $params{Verbosity};
         my $n_bitsize;
         do {
           my $p = random_maurer_prime($size);
@@ -71,6 +69,7 @@ sub generate {
           my $n = $p * $q;
           $n_bitsize = bitsize($n);
         } while $n_bitsize != $params{Size};
+        prime_set_config( verbose => 0 );
     } 
 
     if ($params{KF}) { 

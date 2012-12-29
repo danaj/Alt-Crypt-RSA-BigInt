@@ -1,15 +1,13 @@
-#!/usr/bin/perl -sw
-##
+package Crypt::RSA::SS::PSS;
+use strict;
+use warnings;
+
 ## Crypt::RSA::SS:PSS
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: PSS.pm,v 1.5 2001/06/22 23:27:38 vipul Exp $
 
-package Crypt::RSA::SS::PSS;
-use strict;
 use base 'Crypt::RSA::Errorhandler';
 use Bytes::Random::Secure qw/random_bytes/;
 use Crypt::RSA::DataFormat qw(octet_len os2ip i2osp octet_xor mgf1);

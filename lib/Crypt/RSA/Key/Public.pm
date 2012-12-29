@@ -1,15 +1,13 @@
-#!/usr/bin/perl -sw
-##
+package Crypt::RSA::Key::Public;
+use strict; 
+use warnings;
+
 ## Crypt::RSA::Key::Public
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: Public.pm,v 1.8 2001/09/25 14:11:23 vipul Exp $
 
-package Crypt::RSA::Key::Public;
-use strict; 
 use vars qw($AUTOLOAD);
 use Carp;
 use Data::Dumper;

@@ -25,6 +25,7 @@ for my $ksize (qw(128 256 512 768 1024)) {
                                             Size     => $ksize );
 
     die $keychain->errstr if $keychain->errstr();
+    print "\n";
     print $pub->Identity eq 'mail@vipul.net' ? "ok" : "not ok"; print " ", ++$i, "\n";
     print $pub->n eq $pri->p * $pri->q  ? "ok" : "not ok"; print " ", ++$i, "\n";
     $pri->check || die $pri->errstr();

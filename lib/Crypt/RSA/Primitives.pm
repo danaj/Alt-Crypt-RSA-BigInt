@@ -1,16 +1,14 @@
-#!/usr/bin/perl -sw
-##
+package Crypt::RSA::Primitives; 
+use strict;
+use warnings;
+
 ## Crypt::RSA::Primitives -- Cryptography and encoding primitives  
 ##                           used by Crypt::RSA.
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: Primitives.pm,v 1.14 2001/06/22 23:27:35 vipul Exp $
 
-package Crypt::RSA::Primitives; 
-use strict;
 use base 'Crypt::RSA::Errorhandler';
 use Crypt::RSA::Debug qw(debug);
 use Math::BigInt try => 'GMP, Pari';
@@ -63,7 +61,6 @@ sub core_decrypt {
 
     my $pt;
     if ($key->p && $key->q) {
-        #my($p, $q, $d) = ($key->p, $key->q, $key->d);
         my $p = $key->p;
         my $q = $key->q;
         $key->u ($p->copy->bmodinv($q)) unless defined $key->u;

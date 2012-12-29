@@ -1,15 +1,13 @@
-#!/usr/bin/perl -sw
-##
+package Crypt::RSA::ES::PKCS1v15;
+use strict;
+use warnings;
+
 ## Crypt::RSA::ES::PKCS1v15
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: PKCS1v15.pm,v 1.10 2001/06/22 23:27:37 vipul Exp $
 
-package Crypt::RSA::ES::PKCS1v15;
-use strict;
 use base 'Crypt::RSA::Errorhandler';
 use Bytes::Random::Secure  qw/random_bytes random_string_from/;
 use Crypt::RSA::DataFormat qw(bitsize octet_len os2ip i2osp);

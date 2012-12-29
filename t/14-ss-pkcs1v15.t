@@ -15,7 +15,7 @@ use Crypt::RSA::SS::PKCS1v15;
 use Crypt::RSA::Key::Public;
 use Crypt::RSA::Key::Private;
 
-print "1..8\n";
+print "1..10\n";
 my $i = 0;
 
 my $message =  " Whither should I fly? \
@@ -31,8 +31,9 @@ my ($pub, $priv) = Crypt::RSA::Key->new->generate  (
                         Password => 'f', 
                         Verbosity => 1
                     );
+    print "\n";
 
-for (qw(MD2 MD5 SHA1 SHA256)) { 
+for (qw(MD2 MD5 SHA1 SHA224 SHA256)) { 
    
     my $pkcs = new Crypt::RSA::SS::PKCS1v15 ( Digest => $_ );
  

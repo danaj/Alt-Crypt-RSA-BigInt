@@ -1,16 +1,13 @@
-#!/usr/bin/perl -sw
-##
+package Crypt::RSA::Errorhandler; 
+use strict;
+use warnings;
+
 ## Crypt::RSA::Errorhandler -- Base class that provides error 
 ##                             handling functionality.
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: Errorhandler.pm,v 1.5 2001/06/22 23:27:35 vipul Exp $
-
-package Crypt::RSA::Errorhandler; 
-use strict;
 
 sub new { 
     bless {}, shift

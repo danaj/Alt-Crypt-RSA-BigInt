@@ -1,15 +1,13 @@
-#!/usr/bin/perl -s
-##
+package Crypt::RSA::Debug; 
+use strict;
+use warnings;
+
 ## Crypt::RSA::Debug
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: Debug.pm,v 1.9 2001/04/09 22:21:49 vipul Exp $
 
-package Crypt::RSA::Debug; 
-use strict;
 use vars qw(@ISA @EXPORT_OK);
 require Exporter;
 @ISA = qw(Exporter);

@@ -1,25 +1,23 @@
-#!/usr/bin/perl -s
-##
+package Crypt::RSA::DataFormat; 
+use strict;
+use warnings;
+
 ## Crypt::RSA::DataFormat -- Functions for converting, shaping and 
 ##                           creating and reporting data formats.
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: DataFormat.pm,v 1.13 2001/05/20 23:37:45 vipul Exp $
 
-package Crypt::RSA::DataFormat; 
 use vars qw(@ISA);
 use Math::BigInt try => 'GMP, Pari';
 use Bytes::Random::Secure qw/random_bytes/;
 use Digest::SHA qw(sha1);
 use Carp;
-require Exporter;
-@ISA = qw(Exporter);
 
-@EXPORT_OK = qw(i2osp os2ip h2osp octet_xor octet_len bitsize 
-                generate_random_octet mgf1 steak);
+use base qw(Exporter);
+our @EXPORT_OK = qw(i2osp os2ip h2osp octet_xor octet_len bitsize 
+                    generate_random_octet mgf1 steak);
 
 
 sub i2osp {
