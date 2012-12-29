@@ -59,8 +59,8 @@ sub generate {
         prime_set_config( verbose => 3 ) if $params{Verbosity};
         my $n_bitsize;
         do {
-          my $p = random_maurer_prime($size);
-          my $q = random_maurer_prime($size);
+          my $p = random_maurer_prime($size); print "\n" if $params{Verbosity};
+          my $q = random_maurer_prime($size); print "\n" if $params{Verbosity};
           $p = Math::BigInt->new("$p") unless ref($p) eq 'Math::BigInt';
           $q = Math::BigInt->new("$q") unless ref($q) eq 'Math::BigInt';
           croak "bitsize for random_maurer_prime($size) wrong!" unless bitsize($p) == $size;
@@ -69,7 +69,7 @@ sub generate {
           my $n = $p * $q;
           $n_bitsize = bitsize($n);
         } while $n_bitsize != $params{Size};
-        prime_set_config( verbose => 0 );
+        prime_set_config( verbose => 0 ) if $params{Verbosity};
     } 
 
     if ($params{KF}) { 
