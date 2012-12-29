@@ -15,16 +15,17 @@ use Crypt::RSA::Debug qw(debug);
 use Digest::SHA qw(sha1 sha224 sha256 sha384 sha512);
 use Digest::MD5 qw(md5);
 use Digest::MD2 qw(md2);
+# To add RIPEMD160, add a module here, and define a function in the table below.
 
 $Crypt::RSA::SS::PKCS1v15::VERSION = '1.99';
 
-sub new { 
+sub new {
 
     my ($class, %params) = @_;
-    my $self = bless { 
-                       primitives => new Crypt::RSA::Primitives, 
+    my $self = bless {
+                       primitives => new Crypt::RSA::Primitives,
                        digest     => $params{Digest} || 'SHA1',
-                       encoding   => { 
+                       encoding   => {
   # See http://rfc-ref.org/RFC-TEXTS/3447/chapter9.html
   MD2   =>[\&md2,   "30 20 30 0c 06 08 2a 86 48 86 f7 0d 02 02 05 00 04 10"],
   MD5   =>[\&md5,   "30 20 30 0c 06 08 2a 86 48 86 f7 0d 02 05 05 00 04 10"],
@@ -33,10 +34,14 @@ sub new {
   SHA256=>[\&sha256,"30 31 30 0d 06 09 60 86 48 01 65 03 04 02 01 05 00 04 20"],
   SHA384=>[\&sha384,"30 41 30 0d 06 09 60 86 48 01 65 03 04 02 02 05 00 04 30"],
   SHA512=>[\&sha512,"30 51 30 0d 06 09 60 86 48 01 65 03 04 02 03 05 00 04 40"],
+  RIPEMD160=>[undef,"30 21 30 09 06 05 2B 24 03 02 01 05 00 04 14"],
                                      },
                        VERSION    => $Crypt::RSA::SS::PKCS1v15::VERSION,
-                     }, $class;           
-    if ($params{Version}) { 
+                     }, $class;
+    # Allow "sha256", "sha-256", "RipeMD-160", etc.
+    $self->{digest} =~ tr/a-z/A-Z/;
+    $self->{digest} =~ s/[^A-Z0-9]//g;
+    if ($params{Version}) {
         # do versioning here
     }
     return $self;
@@ -44,48 +49,50 @@ sub new {
 }
 
 
-sub sign { 
+sub sign {
 
-    my ($self, %params) = @_; 
+    my ($self, %params) = @_;
     my $key = $params{Key};
     my $M = $params{Message} || $params{Plaintext};
     return $self->error ("No Message or Plaintext parameter", \$key, \%params) unless $M;
     return $self->error ("No Key parameter", \$M, \%params) unless $key;
     my $k = octet_len ($key->n);
 
-    my $em; 
-    unless ($em = $self->encode ($M, $k-1)) { 
-        return $self->error ($self->errstr, \$key, \%params, \$M) 
+    my $em;
+    unless ($em = $self->encode ($M, $k)) {
+        return $self->error ($self->errstr, \$key, \%params, \$M)
             if $self->errstr eq "Message too long.";
         return $self->error ("Modulus too short.", \$key, \%params, \$M)
             if $self->errstr eq "Intended encoded message length too short";
+        # Other error
+        return $self->error ($self->errstr, \$key, \%params, \$M);
     }
 
     my $m = os2ip ($em);
     my $sig = $self->{primitives}->core_sign (Key => $key, Message => $m);
     return i2osp ($sig, $k);
 
-}    
+}
 
 
-sub verify { 
+sub verify {
 
     my ($self, %params) = @_;
     my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
-    my $S = $params{Signature}; 
+    my $S = $params{Signature};
     return $self->error ("No Message or Plaintext parameter", \$key, \%params) unless $M;
     return $self->error ("No Key parameter", \$M, \$S, \%params) unless $key;
     return $self->error ("No Signature parameter", \$key, \$M, \%params) unless $S;
     my $k = octet_len ($key->n);
     return $self->error ("Invalid signature.", \$key, \$M, \%params) if length($S) != $k;
     my $s = os2ip ($S);
-    my $m = $self->{primitives}->core_verify (Key => $key, Signature => $s) || 
+    my $m = $self->{primitives}->core_verify (Key => $key, Signature => $s) ||
         $self->error ("Invalid signature.", \$M, $key, \%params);
-    my $em = i2osp ($m, $k-1) || 
+    my $em = i2osp ($m, $k) ||
         return $self->error ("Invalid signature.", \$M, \$S, $key, \%params);
-    my $em1; 
-    unless ($em1 = $self->encode ($M, $k-1)) { 
-        return $self->error ($self->errstr, \$key, \%params, \$M) 
+    my $em1;
+    unless ($em1 = $self->encode ($M, $k)) {
+        return $self->error ($self->errstr, \$key, \%params, \$M)
             if $self->errstr eq "Message too long.";
         return $self->error ("Modulus too short.", \$key, \%params, \$M)
             if $self->errstr eq "Intended encoded message length too short.";
@@ -99,45 +106,53 @@ sub verify {
 }
 
 
-sub encode { 
+sub encode {
 
     my ($self, $M, $emlen) = @_;
 
     my $encoding = $self->{encoding}->{$self->{digest}};
-    $self->error ("Invalid encoding: $self->{digest}") unless defined $encoding;
+    return $self->error ("Invalid encoding: $self->{digest}") unless defined $encoding;
     my ($hashfunc, $digestinfo) = @$encoding;
+    return $self->error ("encoding method $self->{digest} not supported") unless defined $hashfunc;
 
-    # http://rfc-ref.org/RFC-TEXTS/3447/chapter9.html
-    # Should be emlen - Tlen - 3, and em = chr(0) . chr(1) . $PS ....
-    # http://www.faqs.org/rfcs/rfc2313.html says the same thing.  We seem to
-    # be missing a zero byte at the front and put an extra FF in PS instead.
-    # See: http://osdir.com/ml/mozilla.crypto/2005-05/msg00300.html
-    # for a little bit of info on how some of this came about.
+    # Changed to match RFC 2313 (PKCS#1 v1.5) and 3447 (PKCS#1 v2.1).
+    # There was apparently some confusion from XML documentation that
+    # printed a different set of instructions here.  See, for example:
+    #     http://osdir.com/ml/mozilla.crypto/2005-05/msg00300.htm
+    # However, previously emlen was always k-1, so the result ended up
+    # being identical anyway.  One change is that we now return if there
+    # is not enough padding.  Previously the error string would be set
+    # but processing would continue.
+    #
+    # Refs:
+    #     http://rfc-ref.org/RFC-TEXTS/3447/chapter9.html
+    #     https://tools.ietf.org/html/rfc2313
     my $H = $hashfunc->($M);
     my $alg = h2osp($digestinfo);
+    return $self->error ("Invalid digest results: $self->{digest}") unless defined $H && length($H) > 0;
 
     my $T = $alg . $H;
-    $self->error ("Intended encoded message length too short.", \$M) if $emlen < length($T) + 11;
-    my $pslen = $emlen - length($T) - 2;
+    return $self->error ("Intended encoded message length too short.", \$M) if $emlen < length($T) + 11;
+    my $pslen = $emlen - length($T) - 3;
     my $PS = chr(0xff) x $pslen;
-    my $em = chr(1) . $PS . chr(0) . $T; 
+    my $em = chr(0) . chr(1) . $PS . chr(0) . $T;
     return $em;
 
 }
 
 
-sub version { 
+sub version {
     my $self = shift;
     return $self->{VERSION};
 }
 
 
-sub signblock { 
+sub signblock {
     return -1;
 }
 
 
-sub verifyblock { 
+sub verifyblock {
     my ($self, %params) = @_;
     return octet_len($params{Key}->n);
 }
@@ -147,51 +162,51 @@ sub verifyblock {
 
 =head1 NAME
 
-Crypt::RSA::SS::PKCS1v15 - PKCS #1 v1.5 signatures. 
+Crypt::RSA::SS::PKCS1v15 - PKCS #1 v1.5 signatures.
 
 =head1 SYNOPSIS
 
-    my $pkcs = new Crypt::RSA::SS::PKCS1v15 ( 
+    my $pkcs = new Crypt::RSA::SS::PKCS1v15 (
                         Digest => 'MD5'
                     );
 
     my $signature = $pkcs->sign (
                         Message => $message,
-                        Key     => $private, 
+                        Key     => $private,
                     ) || die $pss->errstr;
 
     my $verify    = $pkcs->verify (
-                        Message   => $message, 
-                        Key       => $key, 
-                        Signature => $signature, 
+                        Message   => $message,
+                        Key       => $key,
+                        Signature => $signature,
                     ) || die $pss->errstr;
 
 
 =head1 DESCRIPTION
 
-This module implements PKCS #1 v1.5 signatures based on RSA. See [13] 
+This module implements PKCS #1 v1.5 signatures based on RSA. See [13]
 for details on the scheme.
 
 =head1 METHODS
 
 =head2 B<new()>
 
-Constructor.   Takes a hash as argument with the following key: 
+Constructor.   Takes a hash as argument with the following key:
 
 =over 4
 
-=item B<Digest> 
+=item B<Digest>
 
 Name of the Message Digest algorithm. Three Digest algorithms are
 supported: MD2, MD5, SHA1, SHA224, SHA256, SHA384, and SHA512.
 Digest defaults to SHA1.
 
-=back 
+=back
 
 
 =head2 B<version()>
 
-Returns the version number of the module. 
+Returns the version number of the module.
 
 =head2 B<sign()>
 
@@ -200,11 +215,11 @@ signer. sign() takes a hash argument with the following mandatory keys:
 
 =over 4
 
-=item B<Message> 
+=item B<Message>
 
-Message to be signed, a string of arbitrary length.  
+Message to be signed, a string of arbitrary length.
 
-=item B<Key> 
+=item B<Key>
 
 Private key of the signer, a Crypt::RSA::Key::Private object.
 
@@ -221,15 +236,15 @@ following mandatory keys:
 
 =item B<Key>
 
-Public key of the signer, a Crypt::RSA::Key::Public object. 
+Public key of the signer, a Crypt::RSA::Key::Public object.
 
 =item B<Message>
 
-The original signed message, a string of arbitrary length. 
+The original signed message, a string of arbitrary length.
 
 =item B<Signature>
 
-Signature computed with sign(), a string. 
+Signature computed with sign(), a string.
 
 =back
 
@@ -245,7 +260,7 @@ See BIBLIOGRAPHY in Crypt::RSA(3) manpage.
 
 Vipul Ved Prakash, E<lt>mail@vipul.netE<gt>
 
-=head1 SEE ALSO 
+=head1 SEE ALSO
 
 Crypt::RSA(3), Crypt::RSA::Primitives(3), Crypt::RSA::Keys(3),
 Crypt::RSA::EME::OAEP(3)
