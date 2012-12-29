@@ -3,9 +3,6 @@
 
  - don't use FindBin
 
- - SHA 384 and 512
- - tests for SHA 384/512
-
  - Should we be concerned about deserialize doing a string eval on the input,
    especially if that input came from some disk file they gave us in read()?
 
@@ -26,8 +23,5 @@
 
  - The test suites do almost no failure testing.  Use Devel::Cover to see all
    the failure cases that aren't covered.
-
- - Setting Verbosity for key generation now makes pretty output, but the
-   last newline is missing.  Need to patch Math::Prime::Util to add this.
 
  - Look into allowing other SHA hashes for PSS and OAEP.

@@ -1,5 +1,10 @@
 Revision history for Perl module Alt::Crypt::RSA::BigInt
 
+0.03 ?? December 2012
+
+  - Add tests for SHA384 and SHA512.
+
+
 0.02 28 December 2012
 
   - Fix a decrypt issue setting keys
