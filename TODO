@@ -11,8 +11,8 @@
       convinced it really needs 5.8, but it won't currently build without it.
 
     - Math::Prime::Util has lots of issues with 5.6.2 on 64-bit machines, since
-      5.6.2 can't represent integers in the range 2^50 to 2^64.  This is just
-      fundamentally broken, and it's a _huge_ pain to work around.
+      5.6.2 can't represent integers in the range 2^50 to 2^64.  This version
+      of Perl is just fundamentally broken and a _huge_ pain to work around.
 
  - There are, in my opinion, too many dependencies.  Installing this on a
    Cygwin system results in 49 dependencies installed, taking over a half hour.

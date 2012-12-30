@@ -15,7 +15,7 @@ use Crypt::RSA::SS::PKCS1v15;
 use Crypt::RSA::DataFormat qw(os2ip i2osp);
 use Benchmark;
 
-my $count = shift || 100;
+my $count = shift || 5;
 
 plan tests => 1;
 
@@ -27,8 +27,10 @@ my $message =  " Whither should I fly? \
                  I am in this earthly world, where to do harm \
                  Is often laudable, to do good sometime \
                  Accounted dangerous folly. ";
-# Make the message longer so we don't spend all the time in helper functions.
-$message .= $message for 1..6;
+# With a very small message, GMP is so fast all we're benchmarking is helper
+# functions.  If we make the message too long, then no-GMP/Pari systems take
+# forever.  Compromise.
+$message .= $message for 1..4;
 
 my $keychain = Crypt::RSA::Key->new();
 
