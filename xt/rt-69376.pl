@@ -3,8 +3,9 @@ use warnings;
 use strict;
 use Crypt::RSA::Key;
 use Crypt::RSA::Key::Private::SSH;
-use Data::Dumper;
-use Data::Compare;
+use Test::More;
+
+plan tests => 9;
 
 my $obj = new Crypt::RSA::Key;
 
@@ -12,16 +13,18 @@ my $obj = new Crypt::RSA::Key;
 my ($pub, $pri) = $obj->generate( Identity => 'Some User <someuser@example.com>', Size => 1024, KF => 'SSH' );
 
 foreach my $cipher (qw/Blowfish IDEA DES DES3 Twofish2 CAST5 Rijndael RC6 Camellia/) {
-  # Now try to encrypt this key
-  my $crypted = $pri->serialize( Cipher => $cipher, Password => "Hunter2" );
-  # Now decrypt
-  my $new_pri = $pri->deserialize( String=> [$crypted], Password => "Hunter2" );
+  SKIP: {
+    my $file = ($cipher eq 'DES3') ? 'Crypt/DES_EDE3.pm' : "Crypt/$cipher.pm";
+    eval { require "$file"; 1; };
+    skip "$cipher not supported", 1 if $@;
 
-  if (Compare($pri, $new_pri)) {
-    print "SUCCESS : $cipher\n";
-  } else {
-    print Dumper($pri);
-    print Dumper($new_pri);
-    die "FAILURE: $cipher\n";
+    my ($newpub, $newpri) = $obj->generate( Size => 64, KF => 'SSH' );
+
+    my $crypted = $pri->serialize( Cipher => $cipher, Password => "Hunter2" );
+    $newpri->deserialize( String => $crypted, Password => "Hunter2" );
+
+    is_deeply($newpri, $pri, "$cipher serialized");
+    #print Dumper($pri);
+    #print Dumper($new_pri);
   }
 }

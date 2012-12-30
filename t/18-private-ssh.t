@@ -23,7 +23,7 @@ my $n1 = $pri->n;
 # Only Blowfish is required to be present based on the dependencies we list.
 foreach my $cipher (qw/Blowfish/) {
 
-  my $s = $pri->serialize( Cipher => $cipher );
+  my $s = $pri->serialize( Cipher => $cipher, Password => 'serpent' );
 
   my ($newpub, $newpri) = $obj->generate( Size => 128, KF => 'SSH' );
 
@@ -31,7 +31,10 @@ foreach my $cipher (qw/Blowfish/) {
   eval { $newpri->deserialize( String => $s, Password => "mst" ); };
   like($@, qr/passphrase/i, "Bad passphrase will croak");
 
-  $newpri->deserialize( String => $s, Password => "guess" );
+  $newpri->deserialize( String => $s, Password => "serpent" );
+  # newpri should have no password assigned
+  $newpri->{Password} = 'guess';
+  
   is_deeply( $newpri, $pri, "private key fully deserialized using $cipher");
 
 }

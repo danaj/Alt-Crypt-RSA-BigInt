@@ -156,12 +156,13 @@ sub deserialize {
     $key->p( $buffer->get_mp_int );
     $key->q( $buffer->get_mp_int );
 
-    # Restore other variables.  This should make the key identical to one
-    # freshly generated.
+    # Restore other variables.
     $key->phi( ($key->p - 1) * ($key->q - 1) );
     $key->dp( $key->d % ($key->p - 1) );
     $key->dq( $key->d % ($key->q - 1) );
-    $key->{Password} = $passphrase unless defined $key->{Password};
+    # Our passphrase may be just temporary for the serialization, and have
+    # nothing to do with the key.  So don't store it.
+    #$key->{Password} = $passphrase unless defined $key->{Password};
 
     $key;
 }
