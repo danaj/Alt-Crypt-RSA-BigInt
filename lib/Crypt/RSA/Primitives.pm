@@ -1,8 +1,8 @@
-package Crypt::RSA::Primitives; 
+package Crypt::RSA::Primitives;
 use strict;
 use warnings;
 
-## Crypt::RSA::Primitives -- Cryptography and encoding primitives  
+## Crypt::RSA::Primitives -- Cryptography and encoding primitives
 ##                           used by Crypt::RSA.
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
@@ -14,18 +14,18 @@ use Crypt::RSA::Debug qw(debug);
 use Math::BigInt try => 'GMP, Pari';
 use Carp;
 
-sub new { 
-    return bless {}, shift; 
-} 
+sub new {
+    return bless {}, shift;
+}
 
 
 sub core_encrypt {
 
-    # procedure: 
-    # c = (m ** e) mod n 
+    # procedure:
+    # c = (m ** e) mod n
 
     my ($self, %params) = @_;
-    my $key = $params{Key}; 
+    my $key = $params{Key};
     $self->error ("Bad key.", \%params, $key) unless $key->check();
     my $plaintext = (defined $params{Message}) ? $params{Message} : $params{Plaintext};
     $plaintext = Math::BigInt->new("$plaintext") if ref($plaintext) ne 'Math::BigInt';
@@ -33,7 +33,7 @@ sub core_encrypt {
 
     my $e = $key->e;
     my $n = $key->n;
-    return $self->error ("Numeric representation of plaintext is out of bound.", 
+    return $self->error ("Numeric representation of plaintext is out of bound.",
                           \$plaintext, $key, \%params) if $plaintext > $n;
     my $c = $plaintext->bmodpow($e, $n);
     debug ("ct == $c");
@@ -45,12 +45,11 @@ sub core_encrypt {
 
 sub core_decrypt {
 
-    # procedure: 
+    # procedure:
     # p = (c ** d) mod n
 
-
     my ($self, %params) = @_;
-    my $key = $params{Key}; 
+    my $key = $params{Key};
     $self->error ("Bad key.") unless $key->check();
 
     my $cyphertext = defined $params{Cyphertext} ? $params{Cyphertext} : $params{Ciphertext};
@@ -61,6 +60,7 @@ sub core_decrypt {
 
     my $pt;
     if ($key->p && $key->q) {
+        # Garner's CRT algorithm
         my $p = $key->p;
         my $q = $key->q;
         $key->u ($p->copy->bmodinv($q)) unless defined $key->u;
@@ -83,20 +83,20 @@ sub core_decrypt {
 }
 
 
-sub core_sign { 
+sub core_sign {
 
-    my ($self, %params) = @_; 
+    my ($self, %params) = @_;
     $params{Cyphertext} = $params{Message} || $params{Plaintext};
-    return $self->core_decrypt (%params); 
+    return $self->core_decrypt (%params);
 
-} 
+}
 
 
-sub core_verify { 
+sub core_verify {
 
-    my ($self, %params) = @_; 
+    my ($self, %params) = @_;
     $params{Plaintext} = $params{Signature};
-    return $self->core_encrypt (%params); 
+    return $self->core_encrypt (%params);
 
 }
 
@@ -105,14 +105,14 @@ sub core_verify {
 
 =head1 NAME
 
-Crypt::RSA::Primitives - RSA encryption, decryption, signature and verification primitives. 
+Crypt::RSA::Primitives - RSA encryption, decryption, signature and verification primitives.
 
 =head1 SYNOPSIS
 
     my $prim = new Crypt::RSA::Primitives;
-    my $ctxt = $prim->core_encrypt (Key => $key, Plaintext => $string); 
+    my $ctxt = $prim->core_encrypt (Key => $key, Plaintext => $string);
     my $ptxt = $prim->core_decrypt (Key => $key, Cyphertext => $ctxt);
-    my $sign = $prim->core_sign    (Key => $key, Message => $string); 
+    my $sign = $prim->core_sign    (Key => $key, Message => $string);
     my $vrfy = $prim->core_verify  (Key => $key, Signature => $sig);
 
 =head1 DESCRIPTION
@@ -130,9 +130,9 @@ See B<ERROR HANDLING> in Crypt::RSA(3) manpage.
 
 Vipul Ved Prakash, E<lt>mail@vipul.netE<gt>
 
-=head1 SEE ALSO 
+=head1 SEE ALSO
 
-Crypt::RSA(3), Crypt::RSA::Key(3), Crypt::RSA::ES::OAEP(3), 
+Crypt::RSA(3), Crypt::RSA::Key(3), Crypt::RSA::ES::OAEP(3),
 Crypt::RSA::SS::PSS(3)
 
 =cut

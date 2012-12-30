@@ -16,7 +16,7 @@ foreach my $cipher (qw/Blowfish IDEA DES DES3 Twofish2 CAST5 Rijndael RC6 Camell
   SKIP: {
     my $file = ($cipher eq 'DES3') ? 'Crypt/DES_EDE3.pm' : "Crypt/$cipher.pm";
     eval { require "$file"; 1; };
-    skip "$cipher not supported", 1 if $@;
+    skip "$cipher module not found", 1 if $@;
 
     my ($newpub, $newpri) = $obj->generate( Size => 64, KF => 'SSH' );
 

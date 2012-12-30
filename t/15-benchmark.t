@@ -27,6 +27,8 @@ my $message =  " Whither should I fly? \
                  I am in this earthly world, where to do harm \
                  Is often laudable, to do good sometime \
                  Accounted dangerous folly. ";
+# Make the message longer so we don't spend all the time in helper functions.
+$message .= $message for 1..6;
 
 my $keychain = Crypt::RSA::Key->new();
 
