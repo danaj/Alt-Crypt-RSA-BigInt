@@ -15,9 +15,14 @@ use Crypt::RSA::Debug qw(debug);
 use Digest::SHA qw(sha1 sha224 sha256 sha384 sha512);
 use Digest::MD5 qw(md5);
 use Digest::MD2 qw(md2);
-# To add RIPEMD160, add a module here, and define a function in the table below.
 
 $Crypt::RSA::SS::PKCS1v15::VERSION = '1.99';
+
+# See if we have a bug-fixed RIPEMD-160.
+my $ripe_hash = undef;
+if (eval { require Crypt::RIPEMD160; $Crypt::RIPEMD160::VERSION >= 0.05; }) {
+  $ripe_hash = sub { my $r=new Crypt::RIPEMD160; $r->add(shift); $r->digest();};
+}
 
 sub new {
 
@@ -34,7 +39,7 @@ sub new {
   SHA256=>[\&sha256,"30 31 30 0d 06 09 60 86 48 01 65 03 04 02 01 05 00 04 20"],
   SHA384=>[\&sha384,"30 41 30 0d 06 09 60 86 48 01 65 03 04 02 02 05 00 04 30"],
   SHA512=>[\&sha512,"30 51 30 0d 06 09 60 86 48 01 65 03 04 02 03 05 00 04 40"],
-  RIPEMD160=>[undef,"30 21 30 09 06 05 2B 24 03 02 01 05 00 04 14"],
+  RIPEMD160=>[$ripe_hash,"30 21 30 09 06 05 2B 24 03 02 01 05 00 04 14"],
                                      },
                        VERSION    => $Crypt::RSA::SS::PKCS1v15::VERSION,
                      }, $class;

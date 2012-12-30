@@ -4,6 +4,10 @@ Revision history for Perl module Alt::Crypt::RSA::BigInt
 
   - Add tests for SHA384 and SHA512.
 
+  - Add more data to meta file, including git repository.
+
+  - Add optional support for RIPEMD160.
+
 
 0.02 28 December 2012
 
