@@ -32,9 +32,8 @@ sub put_mp_int {
 
 
 package Crypt::RSA::Key::Private::SSH;
-use FindBin qw($Bin);
-use lib "$Bin/../../../../../lib";
 use strict;
+use warnings;
 use constant PRIVKEY_ID => "SSH PRIVATE KEY FILE FORMAT 1.1\n";
 use vars qw( %CIPHERS );
 
