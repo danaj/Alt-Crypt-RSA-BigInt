@@ -8,14 +8,17 @@ use warnings;
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 
+use Carp qw/croak/;
 use Crypt::RSA::DataFormat qw(bitsize);
 use Crypt::RSA::Key::Public;
-use vars qw(@ISA);
-@ISA = qw(Crypt::RSA::Key::Public);
+use base qw( Crypt::RSA::Key::Public );
 
 sub deserialize {
     my ($self, %params) = @_;
-    my ($bitsize, $e, $n, $ident) = split /\s/, join'',@{$params{String}};
+    my $string = $params{String};
+    croak "Must supply String=>'blob' to deserialize" unless defined $string;
+    $string = join('', @$string) if ref($string) eq 'ARRAY';
+    my ($bitsize, $e, $n, $ident) = split /\s/, $string, 4;
     $self->n ($n);
     $self->e ($e);
     $self->Identity ($ident);

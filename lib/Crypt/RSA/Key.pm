@@ -81,9 +81,9 @@ sub generate {
     my $priload = $params{SKF} ? $params{SKF} : { Name => "Native_SKF" };
 
     my $pubkey = $self->_load (%$pubload) || 
-        return $self->error ("Couldn't load the public key module.");
-    my $prikey = $self->_load ((%$priload), Args => ['Cipher' => $params{Cipher}, 'Password', $params{Password} ]) || 
-        return $self->error ("Couldn't load the private key module.");
+        return $self->error ("Couldn't load the public key module: $@");
+    my $prikey = $self->_load ((%$priload), Args => ['Cipher' => $params{Cipher}, 'Password' => $params{Password} ]) || 
+        return $self->error ("Couldn't load the private key module: $@");
     $pubkey->Identity ($params{Identity});
     $prikey->Identity ($params{Identity});
 

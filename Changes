@@ -8,6 +8,14 @@ Revision history for Perl module Alt::Crypt::RSA::BigInt
 
   - Add optional support for RIPEMD160.
 
+  - Rewrite Key/Private/SSH.pm, and add tests.  I don't think it ever worked.
+    Now supports IDEA, DES, DES3, Blowfish, Twofish, CAST5, Rijndael, RC6, and
+    Camelia (only the first 4 are guaranteed -- the others depend on having a
+    module installed).  Multiple alternative modules are allowed for some.
+    This fixes:
+
+     RT 69376  Bug in Crypt::RSA::Key::Private::SSH serialize function
+
 
 0.02 28 December 2012
 
