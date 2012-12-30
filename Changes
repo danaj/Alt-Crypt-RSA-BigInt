@@ -16,6 +16,17 @@ Revision history for Perl module Alt::Crypt::RSA::BigInt
 
      RT 69376  Bug in Crypt::RSA::Key::Private::SSH serialize function
 
+  - All tests converted to Test::More.
+
+  - FindBin is no longer used.  You'll need to do:
+       perl -Iblib/lib -Iblib/arch ...
+    to get the version in this directory.  'make test' does this for us.
+    use 'prove -l -b' to prove using the local version.
+
+    I think FindBin is great for example files and such, but I don't think
+    it is appropriate in the .pm files or in tests.  If we do use it, it has
+    to be added to the dependency list.
+
 
 0.02 28 December 2012
 

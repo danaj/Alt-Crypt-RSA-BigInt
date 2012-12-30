@@ -189,7 +189,7 @@ sub serialize {
       $cipher_type = $CIPHERS_TEXT{ uc $cipher_name };
       croak "Unknown cipher: '$cipher_name'" unless defined $cipher_type;
     }
- 
+
     my $buffer = new Crypt::RSA::Key::Private::SSH::Buffer;
     my($check1, $check2);
     $buffer->put_int8($check1 = int rand 255);
@@ -237,12 +237,12 @@ sub serialize {
     else {
         $encrypted->append($buffer->bytes);
     }
-    
+
     $encrypted->bytes;
 }
 
 
-sub hide {} 
+sub hide {}
 
 =head1 NAME
 

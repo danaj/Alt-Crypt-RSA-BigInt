@@ -1,20 +1,18 @@
-#!/usr/bin/perl -sw
-##
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
 ## 11-wrapper.t
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
-##
-## $Id: 11-wrapper.t,v 1.2 2001/04/17 19:53:23 vipul Exp $
 
-use FindBin qw($Bin);
-use lib "$Bin/../lib";
+use Test::More;
 use Crypt::RSA;
-use Crypt::RSA::Debug qw(debuglevel);
 
-print "1..12\n";
-my $i = 0;
+plan tests => 3 * 4;
+
 my $rsa = new Crypt::RSA;
 
 my $plaintext =<<'EOM';
@@ -35,7 +33,7 @@ my $plaintext =<<'EOM';
     Glamis thou art, and Cawdor, and shalt be
     What thou art promised. Yet do I fear thy nature.
     It is too full o' the milk of human kindness
-    To catch the nearest way. Thou wouldst be great; 
+    To catch the nearest way. Thou wouldst be great;
     Art not without ambition, but without
     The illness should attend it. What thou wouldst highly,
     That wouldst thou holily; wouldst not play false,
@@ -51,54 +49,51 @@ my $plaintext =<<'EOM';
 
 EOM
 
-for my $keysize (qw(384 1536 512)) { 
+for my $keysize (qw(384 1536 512)) {
 
     # $plaintext = "" if $keysize == 512;
 
-    my ($pub, $pri) = $rsa->keygen ( 
-                        Size      => $keysize, 
-                        Verbosity => 1, 
+    my ($pub, $pri) = $rsa->keygen (
+                        Size      => $keysize,
                         Identity  => "Lord Macbeth",
                         Password  => "xx"
                       ) or die $rsa->errstr();
 
-    my $ctxt = $rsa->encrypt ( 
+    my $ctxt = $rsa->encrypt (
                         Message => $plaintext,
                         Key     => $pub,
                         Armour  => 1,
                      ) || die $rsa->errstr();
 
-    print "$ctxt\n";
-
-    print $ctxt ? "ok" : "not ok"; print " ", ++$i, "\n";
+    # diag($ctxt);
+    like( $ctxt, qr/Scheme: Crypt::RSA::ES::OAEP/, "Encrypted $keysize bits with armor" );
 
     my $ptxt = $rsa->decrypt (
-                        Cyphertext => $ctxt, 
+                        Cyphertext => $ctxt,
                         Key        => $pri,
-                        Armour     => 1, 
+                        Armour     => 1,
                      );
+    die $rsa->errstr() if $rsa->errstr();
 
-    die $rsa->errstr() if ($rsa->errstr() && !$ptxt);
+    # diag($ptxt);
+    is($ptxt, $plaintext, "Decrypted with armor");
 
-    print $ptxt if $ptxt;
-    print $ptxt eq $plaintext  ? "ok" : "not ok"; print " ", ++$i, "\n";
-
-    my $signature = $rsa->sign ( 
-                        Message => $plaintext, 
+    my $signature = $rsa->sign (
+                        Message => $plaintext,
                         Key => $pri,
                         Armour => 1,
                     ) || die $rsa->errstr();
 
-    print "$signature\n";
-    print $signature ? "ok" : "not ok"; print " ", ++$i, "\n";
+    # diag($signature);
+    like( $signature, qr/Scheme: Crypt::RSA::SS::PSS/, "RSA signature" );
 
     my $verify = $rsa->verify (
-                    Message => $plaintext, 
-                    Key => $pub, 
+                    Message => $plaintext,
+                    Key => $pub,
                     Signature => $signature,
                     Armour => 1,
                  );
 
-    print $verify ? "ok" : "not ok"; print " ", ++$i, "\n";
+    ok($verify, "Verified RSA signature");
 
 }

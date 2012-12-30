@@ -1,8 +1,4 @@
 
- - tests using Test::More
-
- - don't use FindBin
-
  - Should we be concerned about deserialize doing a string eval on the input,
    especially if that input came from some disk file they gave us in read()?
 
@@ -28,3 +24,6 @@
 
  - Decide if RIPEMD160 should be non-optional.  Module version 0.05 looks like
    it has an excellent test pass rate.
+
+ - t/16-serialize.t is just verifying we don't die horribly.  We should verify
+   that it's actually working.

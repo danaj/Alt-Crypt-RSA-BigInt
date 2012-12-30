@@ -6,7 +6,7 @@ use Test::More;
 use Crypt::RSA::Key;
 use Data::Dumper;
 
-plan tests => 4*2;
+plan tests => 1*2;
 
 # Danaj: This is definitely not the interface I would have chosen.  It would
 # seem like you'd like to be able to hand the string to generate.
@@ -19,9 +19,9 @@ my ($pub, $pri) = $obj->generate(
  );
 my $n1 = $pri->n;
 
-# You can also use Twofish2, CAST5, Rijndael, RC6, Camellia.
-# The following are the required ciphers.
-foreach my $cipher (qw/Blowfish IDEA DES DES3/) {
+# You can also use IDEA, DES, DES3, Twofish2, CAST5, Rijndael, RC6, Camellia.
+# Only Blowfish is required to be present based on the dependencies we list.
+foreach my $cipher (qw/Blowfish/) {
 
   my $s = $pri->serialize( Cipher => $cipher );
 

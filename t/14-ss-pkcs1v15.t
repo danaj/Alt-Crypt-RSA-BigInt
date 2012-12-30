@@ -6,15 +6,13 @@ use warnings;
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 
-use FindBin qw($Bin);
-use lib "$Bin/../lib";
+use Test::More;
 use Crypt::RSA::Key;
 use Crypt::RSA::SS::PKCS1v15;
 use Crypt::RSA::Key::Public;
 use Crypt::RSA::Key::Private;
 
-print "1..14\n";
-my $i = 0;
+plan tests => 14;
 
 my $message =  " Whither should I fly? \
                  I have done no harm. But I remember now \
@@ -31,20 +29,18 @@ my ($pub, $priv) = Crypt::RSA::Key->new->generate  (
                         Size => 768,
                         Identity => 'i am i',
                         Password => 'guess me',
-                        Verbosity => 1
                     );
 
-for (qw(MD2 MD5 SHA1 SHA224 SHA256 SHA384 SHA512)) {
+foreach my $hash (qw(MD2 MD5 SHA1 SHA224 SHA256 SHA384 SHA512)) {
 
-    my $pkcs = new Crypt::RSA::SS::PKCS1v15 ( Digest => $_ );
+    my $pkcs = new Crypt::RSA::SS::PKCS1v15 ( Digest => $hash );
 
     my $sig = $pkcs->sign (
                 Message => $message,
                 Key     => $priv,
     ) || die $pkcs->errstr();
 
-    print length($sig) == $pkcs->verifyblock(Key => $priv) ?
-            "ok " : "not ok " , ++$i , "\n";
+    is( $pkcs->verifyblock(Key => $priv), length($sig), "verifyblock" );
 
     my $verify = $pkcs->verify (
                    Key => $pub,
@@ -52,7 +48,7 @@ for (qw(MD2 MD5 SHA1 SHA224 SHA256 SHA384 SHA512)) {
                    Signature => $sig,
     ) || die $pkcs->errstr;
 
-    print $verify ? "ok" : "not ok"; print " ", ++$i, "\n";
+    ok($verify, "Signed and verified using $hash hash");
 
 }
 
