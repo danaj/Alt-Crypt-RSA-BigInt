@@ -39,9 +39,9 @@ WriteMakefile1(
     LICENSE      => 'perl',
     AUTHOR       => 'Dana A Jacobsen <dana@acm.org>',
 
-    #BUILD_REQUIRES=>{
-    #                  'Test::More'       => '0.45',
-    #                },
+    BUILD_REQUIRES=>{
+                      'Test::More'       => '0.45',
+                    },
     PREREQ_PM    => {
                       'Bytes::Random::Secure'  => '0.12',
                       'Math::Prime::Util'      => '0.17',

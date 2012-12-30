@@ -39,6 +39,8 @@ t/13-es-pkcs1v15.t
 t/14-ss-pkcs1v15.t
 t/15-benchmark.t
 t/16-serialize.t
+t/17-public-ssh.t
+t/18-private-ssh.t
 xt/rt-69376.pl
 xt/perlmonks-522597.pl
 xt/sha384.pl
