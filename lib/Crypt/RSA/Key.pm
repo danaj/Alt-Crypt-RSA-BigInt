@@ -10,7 +10,7 @@ use warnings;
 
 use base 'Class::Loader';
 use base 'Crypt::RSA::Errorhandler';
-use Math::Prime::Util      qw(prime_set_config random_maurer_prime);
+use Math::Prime::Util      qw(prime_set_config random_nbit_prime is_strong_pseudoprime primes);
 use Bytes::Random::Secure  qw(random_bytes);
 use Crypt::RSA::DataFormat qw(bitsize);
 use Math::BigInt try => 'GMP, Pari';
@@ -56,20 +56,36 @@ sub generate {
         my $verbosity = $params{Verbosity} || 0;
 
         prime_set_config( irand => sub { unpack("L", random_bytes(4)) } );
-        prime_set_config( verbose => 3 ) if $params{Verbosity};
-        my $n_bitsize;
-        do {
-          my $p = random_maurer_prime($size); print "\n" if $params{Verbosity};
-          my $q = random_maurer_prime($size); print "\n" if $params{Verbosity};
+
+        # Switch from Maurer prime to nbit prime, then add some more primality
+        # testing.  This is faster and gives us a wider set of possible primes.
+        my @prplist = @{primes( 200 )};
+
+        while (1) {
+          my $p = random_nbit_prime($size);
+          my $q = random_nbit_prime($size);
           $p = Math::BigInt->new("$p") unless ref($p) eq 'Math::BigInt';
           $q = Math::BigInt->new("$q") unless ref($q) eq 'Math::BigInt';
-          croak "bitsize for random_maurer_prime($size) wrong!" unless bitsize($p) == $size;
-          croak "bitsize for random_maurer_prime($size) wrong!" unless bitsize($q) == $size;
+
+          next unless bitsize($p * $q) == $params{Size};
+
+          # p and q have passed the strong BPSW test, so it would be shocking
+          # if they were not prime.  We'll add a few more tests because they're
+          # cheap and we want to be extra careful.
+          do { carp "$p passes BPSW but fails pseudoprime tests!"; next; }
+            unless is_strong_pseudoprime($p, @prplist);
+          do { carp "$q passes BPSW but fails pseudoprime tests!"; next; }
+            unless is_strong_pseudoprime($q, @prplist);
+
+          # We could add some more conditions here.  Possibilities:
+          #  - make sure |p-q| is large enough.  With large bit sizes this is
+          #    exceedingly unlikely, but we could easily double check.
+          #  - run some trivial factoring tests, or check the smoothness of
+          #    p-1 and q-1.
+
           $key = { p => $p, q => $q, e => Math::BigInt->new(65537) };
-          my $n = $p * $q;
-          $n_bitsize = bitsize($n);
-        } while $n_bitsize != $params{Size};
-        prime_set_config( verbose => 0 ) if $params{Verbosity};
+          last;
+        }
     } 
 
     if ($params{KF}) { 

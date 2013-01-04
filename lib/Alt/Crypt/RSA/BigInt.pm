@@ -1,7 +1,7 @@
 package Alt::Crypt::RSA::Bigint;
 BEGIN {
   $Alt::Crypt::RSA::Bigint::AUTHORITY = 'cpan:DANAJ';
-  $Alt::Crypt::RSA::Bigint::VERSION = '0.03';
+  $Alt::Crypt::RSA::Bigint::VERSION = '0.04';
 }
 
 =pod
