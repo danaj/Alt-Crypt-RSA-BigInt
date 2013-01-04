@@ -14,6 +14,23 @@ use Crypt::RSA::Key;
 
 plan tests => 5;
 
+# If we're not using GMP or Pari, these tests will take a *long* time.  Hence
+# we're going to put up a notice right now so we are sure they see it.  My
+# VirtualBox Solaris machine without GMP takes about 10 minutes to run this
+# test, while on Fedora with GMP it's 0.6 seconds.
+my $bigintlib = Math::BigInt->config()->{lib};
+$bigintlib =~ s/^Math::BigInt:://;
+diag "BigInt library: $bigintlib\n";
+if ($bigintlib eq 'GMP') {
+  # No further diagnostics
+} elsif ($bigintlib eq 'Pari') {
+  diag "GMP is much faster for this application\n";
+} elsif ($bigintlib =~ /^(Fast)?Calc$/i) {
+  diag "\n*** These tests will be VERY slow.  Install GMP! ***\n\n";
+} else {
+  diag "Unknown library.  Consider installing GMP for performance.\n";
+}
+
 my $oaep = new Crypt::RSA::ES::OAEP;
 my $message = "My plenteous joys, Wanton in fullness, seek to hide themselves.";
 my $keychain = new Crypt::RSA::Key;
