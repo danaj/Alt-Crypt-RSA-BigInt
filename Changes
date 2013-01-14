@@ -7,7 +7,13 @@ Revision history for Perl module Alt::Crypt::RSA::BigInt
     of possible primes in the range).  The downside is that the primes are not
     proven prime, however they will have passed a strong BPSW test and a set of
     Miller-Rabin tests for the first 46 prime bases.  The BPSW test alone is
-    really enough for these sizes (~600 digits).
+    really enough for these sizes (~600 digits or smaller).
+
+  - Ask for Math::BigInt 1.78 to ensure we have 'try'.
+    Thanks to brian carlson.
+
+  - Reduce key sizes in 06 and 11 when not using GMP or Pari.  Some build
+    systems were timing out (e.g. ActiveState).
 
 0.03 30 December 2012
 

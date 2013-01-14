@@ -49,7 +49,11 @@ my $plaintext =<<'EOM';
 
 EOM
 
-for my $keysize (qw(384 1536 512)) {
+my $bigintlib = Math::BigInt->config()->{lib};
+$bigintlib =~ s/^Math::BigInt:://;
+my $largesize = ($bigintlib =~ /^(GMP|Pari)$/) ? 1536 : 768;
+
+for my $keysize (384,512,$largesize) {
 
     # $plaintext = "" if $keysize == 512;
 

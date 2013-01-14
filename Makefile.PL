@@ -43,6 +43,7 @@ WriteMakefile1(
                       'Test::More'       => '0.45',
                     },
     PREREQ_PM    => {
+                      'Math::BigInt'           => '1.78',
                       'Bytes::Random::Secure'  => '0.12',
                       'Math::Prime::Util'      => '0.17',
                       'Crypt::CBC'             => '2.17',

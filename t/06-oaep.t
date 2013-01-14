@@ -14,6 +14,10 @@ use Crypt::RSA::Key;
 
 plan tests => 5;
 
+my $keysize = 1024;
+my $blocksize = 86;
+my $message = "My plenteous joys, Wanton in fullness, seek to hide themselves.";
+
 # If we're not using GMP or Pari, these tests will take a *long* time.  Hence
 # we're going to put up a notice right now so we are sure they see it.  My
 # VirtualBox Solaris machine without GMP takes about 10 minutes to run this
@@ -27,18 +31,20 @@ if ($bigintlib eq 'GMP') {
   diag "GMP is much faster for this application\n";
 } elsif ($bigintlib =~ /^(Fast)?Calc$/i) {
   diag "\n*** These tests will be VERY slow.  Install GMP! ***\n\n";
+  $keysize   = 640;   # 768
+  $blocksize =  38;   #  54
+  $message = "My message, wanton in its brevity";
 } else {
   diag "Unknown library.  Consider installing GMP for performance.\n";
 }
 
 my $oaep = new Crypt::RSA::ES::OAEP;
-my $message = "My plenteous joys, Wanton in fullness, seek to hide themselves.";
 my $keychain = new Crypt::RSA::Key;
 
-my ($pub, $priv) = $keychain->generate ( Size => 1024, Password => 'xx', Identity => 'xx', Verbosity => 1 );
+my ($pub, $priv) = $keychain->generate ( Size => $keysize, Password => 'xx', Identity => 'xx', Verbosity => 1 );
 ok( ! $keychain->errstr, "No error from generate" );
 
-is( $oaep->encryptblock(Key => $pub), 86, "encryptblock" );
+is( $oaep->encryptblock(Key => $pub), $blocksize, "encryptblock" );
 
 my $ct = $oaep->encrypt (Key => $pub, Message => $message);
 ok( ! $oaep->errstr, "No error from oaep encrypt" );
