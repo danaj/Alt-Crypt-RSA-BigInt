@@ -17,7 +17,7 @@ require Exporter;
 my $DEBUG = 0; 
 
 sub debug{
-    return undef unless $DEBUG;
+    return unless $DEBUG;
     my ($caller, undef) = caller;
     my (undef,undef,$line,$sub) = caller(1); $sub =~ s/.*://;
     $sub = sprintf "%12s()%4d", $sub, $line;

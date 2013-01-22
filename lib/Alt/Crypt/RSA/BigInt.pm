@@ -1,4 +1,4 @@
-package Alt::Crypt::RSA::Bigint;
+package Alt::Crypt::RSA::Bigint;   ## no critic (RequireFilenameMatchesPackage)
 use strict;
 use warnings;
 BEGIN {

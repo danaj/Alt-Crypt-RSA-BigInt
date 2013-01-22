@@ -74,7 +74,7 @@ sub hide {
 
     my ($self) = @_;
 
-    return undef unless $$self{Password};
+    return unless $$self{Password};
 
     $self->{private_encrypted} = new Tie::EncryptedHash
             __password => $self->{Password},
@@ -98,7 +98,7 @@ sub reveal {
 
     my ($self, %params) = @_;
     $$self{Password} = $params{Password} if $params{Password};
-    return undef unless $$self{Password};
+    return unless $$self{Password};
     $$self{private_encrypted}{__password} = $params{Password};
     for (keys %{$$self{private_encrypted}}) {
         $$self{private}{$_} = Math::BigInt->new("$$self{private_encrypted}{$_}");
@@ -175,22 +175,22 @@ sub write {
     my ($self, %params) = @_;
     $self->hide();
     my $string = $self->serialize (%params);
-    open DISK, ">$params{Filename}" or
+    open(my $disk, '>', $params{Filename}) or
         croak "Can't open $params{Filename} for writing.";
-    binmode DISK;
-    print DISK $string;
-    close DISK;
+    binmode $disk;
+    print $disk $string;
+    close $disk;
 
 }
 
 
 sub read {
     my ($self, %params) = @_;
-    open DISK, $params{Filename} or
+    open(my $disk, '<', $params{Filename}) or
         croak "Can't open $params{Filename} to read.";
-    binmode DISK;
-    my @key = <DISK>;
-    close DISK;
+    binmode $disk;
+    my @key = <$disk>;
+    close $disk;
     $self = $self->deserialize (String => \@key);
     $self->reveal(%params);
     return $self;

@@ -41,6 +41,7 @@ t/15-benchmark.t
 t/16-serialize.t
 t/17-public-ssh.t
 t/18-private-ssh.t
+t/91-release-pod-syntax.t
 xt/rt-69376.pl
 xt/perlmonks-522597.pl
 xt/sha384.pl

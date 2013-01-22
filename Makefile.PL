@@ -41,11 +41,15 @@ WriteMakefile1(
 
     BUILD_REQUIRES=>{
                       'Test::More'       => '0.45',
+                      'Benchmark'        => 0,
+                      'MIME::Base64'     => 0,
                     },
     PREREQ_PM    => {
                       'Math::BigInt'           => '1.78',
                       'Bytes::Random::Secure'  => '0.12',
                       'Math::Prime::Util'      => '0.17',
+                      'Carp'                   => 0,
+                      'Exporter'               => 0,
                       'Crypt::CBC'             => '2.17',
                       'Crypt::Blowfish'        => 0,
                       'Data::Dumper'           => 0,

@@ -79,22 +79,22 @@ sub write {
     my ($self, %params) = @_;
     $self->hide();
     my $string = $self->serialize (%params);
-    open DISK, ">$params{Filename}" or
+    open(my $disk, '>', $params{Filename}) or
         croak "Can't open $params{Filename} for writing.";
-    binmode DISK;
-    print DISK $string;
-    close DISK;
+    binmode $disk;
+    print $disk $string;
+    close $disk;
 
 }
 
 
 sub read {
     my ($self, %params) = @_;
-    open DISK, $params{Filename} or
+    open(my $disk, '<', $params{Filename}) or
         croak "Can't open $params{Filename} to read.";
-    binmode DISK;
-    my @key = <DISK>;
-    close DISK;
+    binmode $disk;
+    my @key = <$disk>;
+    close $disk;
     $self = $self->deserialize (String => \@key);
     return $self;
 }
