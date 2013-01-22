@@ -1,4 +1,6 @@
 package Alt::Crypt::RSA::Bigint;
+use strict;
+use warnings;
 BEGIN {
   $Alt::Crypt::RSA::Bigint::AUTHORITY = 'cpan:DANAJ';
   $Alt::Crypt::RSA::Bigint::VERSION = '0.04';
