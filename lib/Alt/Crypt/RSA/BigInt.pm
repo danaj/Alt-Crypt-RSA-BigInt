@@ -1,9 +1,9 @@
-package Alt::Crypt::RSA::Bigint;   ## no critic (RequireFilenameMatchesPackage)
+package Alt::Crypt::RSA::BigInt;
 use strict;
 use warnings;
 BEGIN {
-  $Alt::Crypt::RSA::Bigint::AUTHORITY = 'cpan:DANAJ';
-  $Alt::Crypt::RSA::Bigint::VERSION = '0.04';
+  $Alt::Crypt::RSA::BigInt::AUTHORITY = 'cpan:DANAJ';
+  $Alt::Crypt::RSA::BigInt::VERSION = '0.05';
 }
 
 =pod

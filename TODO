@@ -2,22 +2,10 @@
  - Should we be concerned about deserialize doing a string eval on the input,
    especially if that input came from some disk file they gave us in read()?
 
- - Make it work with 5.6.2.  Some issues:
-
-    - namespace::clean and its dependencies have moved on, so older versions
-      of each would have to be installed.
-
-    - Crypt::Random::Source has "use 5.008" lines in numerous places.  I'm not
-      convinced it really needs 5.8, but it won't currently build without it.
-
-    - Math::Prime::Util has lots of issues with 5.6.2 on 64-bit machines, since
-      5.6.2 can't represent integers in the range 2^50 to 2^64.  This version
-      of Perl is just fundamentally broken and a _huge_ pain to work around.
-
- - There are, in my opinion, too many dependencies.  Installing this on a
-   Cygwin system results in 49 dependencies installed, taking over a half hour.
-   It looks like the next version of Bytes::Random::Secure will make this go
-   down a lot.
+ - The only remaining issue with supporting 5.6 is on 64-bit Perls, where
+   Math::Prime::Util's random prime generator doesn't work.  5.6.2 can't
+   represent integers in the range 2^50 to 2^64.  This version of Perl is
+   just fundamentally broken and a _huge_ pain to work around.
 
  - The test suites do almost no failure testing.  Use Devel::Cover to see all
    the failure cases that aren't covered.

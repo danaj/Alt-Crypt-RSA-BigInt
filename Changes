@@ -1,5 +1,12 @@
 Revision history for Perl module Alt::Crypt::RSA::BigInt
 
+0.05 21 January 2012
+
+  - Fixed some perlcritic issues -- mainly returning undef and changing to the
+    three argument open using a lexical file handle.
+
+  - Doh -- Alt's package name was Bigint not BigInt.
+
 0.04 14 January 2012
 
   - Change from random_maurer_prime to random_nbit_prime.  This is much faster
