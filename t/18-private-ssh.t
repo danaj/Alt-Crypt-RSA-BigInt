@@ -5,6 +5,8 @@ use warnings;
 use Test::More;
 use Crypt::RSA::Key;
 use Data::Dumper;
+use Bytes::Random::Secure;
+my $randobj = Bytes::Random::Secure->new(NonBlocking=>1);
 
 plan tests => 1*2;
 
@@ -15,7 +17,11 @@ plan tests => 1*2;
 my $obj = new Crypt::RSA::Key;
 
 my ($pub, $pri) = $obj->generate(
-   Identity => 'Some User <someuser@example.com>', Password => 'guess', Size => 512, KF => 'SSH',
+   Identity => 'Some User <someuser@example.com>',
+   Password => 'guess',
+   Size => 512,
+   KF => 'SSH',
+   RandomSub => sub{ $randobj->irand() },
  );
 my $n1 = $pri->n;
 
@@ -25,7 +31,7 @@ foreach my $cipher (qw/Blowfish/) {
 
   my $s = $pri->serialize( Cipher => $cipher, Password => 'serpent' );
 
-  my ($newpub, $newpri) = $obj->generate( Size => 128, KF => 'SSH' );
+  my ($newpub, $newpri) = $obj->generate( Size => 128, KF => 'SSH', RandomSub => sub{ $randobj->irand() }, );
 
   # Do it incorrectly first.  Should croak.
   eval { $newpri->deserialize( String => $s, Password => "mst" ); };

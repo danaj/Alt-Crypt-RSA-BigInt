@@ -5,6 +5,8 @@ use warnings;
 use Test::More;
 use Crypt::RSA::Key;
 use Data::Dumper;
+use Bytes::Random::Secure;
+my $randobj = Bytes::Random::Secure->new(NonBlocking=>1);
 
 plan tests => 3;
 
@@ -15,13 +17,17 @@ plan tests => 3;
 my $obj = new Crypt::RSA::Key;
 
 my ($pub, $pri) = $obj->generate(
-   Identity => 'Some User <someuser@example.com>', Password => 'guess', Size => 512, KF => 'SSH',
+   Identity => 'Some User <someuser@example.com>',
+   Password => 'guess',
+   Size => 512,
+   KF => 'SSH',
+   RandomSub => sub{ $randobj->irand() },
  );
 die $obj->errstr if $obj->errstr();
 my $n1 = $pub->n;
 my $s = $pub->serialize();
 
-my ($newpub, $newpri) = $obj->generate( Size => 128, KF => 'SSH' );
+my ($newpub, $newpri) = $obj->generate( Size => 128, KF => 'SSH', RandomSub => sub{ $randobj->irand() }, );
 my $n2 = $newpub->n;
 
 # Make sure we're not bonkers

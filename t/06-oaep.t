@@ -11,6 +11,8 @@ use warnings;
 use Test::More;
 use Crypt::RSA::ES::OAEP;
 use Crypt::RSA::Key;
+use Bytes::Random::Secure;
+my $randobj = Bytes::Random::Secure->new(NonBlocking=>1);
 
 plan tests => 5;
 
@@ -41,7 +43,12 @@ if ($bigintlib eq 'GMP') {
 my $oaep = new Crypt::RSA::ES::OAEP;
 my $keychain = new Crypt::RSA::Key;
 
-my ($pub, $priv) = $keychain->generate ( Size => $keysize, Password => 'xx', Identity => 'xx', Verbosity => 1 );
+my ($pub, $priv) = $keychain->generate (
+  Size => $keysize,
+  Password => 'xx',
+  Identity => 'xx',
+  RandomSub => sub { $randobj->irand() },
+  Verbosity => 1 );
 ok( ! $keychain->errstr, "No error from generate" );
 
 is( $oaep->encryptblock(Key => $pub), $blocksize, "encryptblock" );

@@ -7,11 +7,16 @@ use warnings;
 
 use Test::More;
 use Crypt::RSA::Key;
+use Bytes::Random::Secure;
+my $randobj = Bytes::Random::Secure->new(NonBlocking=>1);
 
 plan tests => 2;
 
 my $keychain = new Crypt::RSA::Key; 
-my ($pub, $pri) = $keychain->generate(Password => "correct horse battery staple", Size=>256);
+my ($pub, $pri) = $keychain->generate(
+  Password  => "correct horse battery staple",
+  Size      => 256,
+  RandomSub => sub { $randobj->irand() } );
 die $keychain->errstr if $keychain->errstr();
 
 {

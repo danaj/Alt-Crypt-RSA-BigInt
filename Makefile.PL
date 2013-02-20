@@ -45,9 +45,9 @@ WriteMakefile1(
                       'MIME::Base64'     => 0,
                     },
     PREREQ_PM    => {
-                      'Math::BigInt'           => '1.78',
-                      'Bytes::Random::Secure'  => '0.12',
-                      'Math::Prime::Util'      => '0.17',
+                      'Math::BigInt'           => '1.78', # try => backend
+                      'Bytes::Random::Secure'  => '0.23', # object->irand
+                      'Math::Prime::Util'      => '0.17', # pluggable irand
                       'Carp'                   => 0,
                       'Exporter'               => 0,
                       'Crypt::CBC'             => '2.17',

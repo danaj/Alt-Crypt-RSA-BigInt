@@ -31,6 +31,11 @@ my %MODMAP = (
 sub new { 
     my $class = shift;
     my $self = {};
+    # Use one BRS object per key object.  It should be ok to re-use between
+    # keys, since BRS is a CSPRNG.  We could share one BRS object between all
+    # objects which would be a bit more efficient (that would be similar to
+    # using BRS's functional interface).
+    $self->{RandomObject} = Bytes::Random::Secure->new( Bits => 256 );
     bless $self, $class;
     $self->_storemap ( %MODMAP );
     return $self;
@@ -55,7 +60,11 @@ sub generate {
         my $size = int($params{Size}/2);  
         my $verbosity = $params{Verbosity} || 0;
 
-        prime_set_config( irand => sub { unpack("L", random_bytes(4)) } );
+        my $randobj = $self->{RandomObject};
+        my $randsub = $params{RandomSub} || sub { $randobj->irand() };
+        return $self->error("RandomSub must be a CODE reference.")
+               unless ref($randsub) eq 'CODE';
+        prime_set_config( irand => $randsub );
 
         # Switch from Maurer prime to nbit prime, then add some more primality
         # testing.  This is faster and gives us a wider set of possible primes.
@@ -71,7 +80,10 @@ sub generate {
 
           # p and q have passed the strong BPSW test, so it would be shocking
           # if they were not prime.  We'll add a few more tests because they're
-          # cheap and we want to be extra careful.
+          # cheap and we want to be extra careful, but also don't want to spend
+          # the time doing a full primality proof.  The results will have
+          # passed BPSW as well as being strong pseudoprimes to the first 46
+          # prime bases.
           do { carp "$p passes BPSW but fails pseudoprime tests!"; next; }
             unless is_strong_pseudoprime($p, @prplist);
           do { carp "$q passes BPSW but fails pseudoprime tests!"; next; }
@@ -81,7 +93,7 @@ sub generate {
           #  - make sure |p-q| is large enough.  With large bit sizes this is
           #    exceedingly unlikely, but we could easily double check.
           #  - run some trivial factoring tests, or check the smoothness of
-          #    p-1 and q-1.
+          #    p-1 and q-1.  Using random_strong_prime could also do this.
 
           $key = { p => $p, q => $q, e => Math::BigInt->new(65537) };
           last;
@@ -220,6 +232,14 @@ with Crypt::RSA::Key::Private(3).
 =item B<PKF> 
 
 Public Key Format. This option is like SKF but for the public key.
+
+=item B<RandomSub>
+
+A code reference that returns a 32-bit random number when called.  This will
+be used to generate random data for selecting the random primes needed for key
+generation.  The default source is almost always a good choice so you should
+never need to use this parameter for normal use.  It is specifically available
+for special needs such as selecting a non-blocking seed source for tests.
 
 =back
 

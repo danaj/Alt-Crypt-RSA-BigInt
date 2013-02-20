@@ -7,6 +7,16 @@ Revision history for Perl module Alt::Crypt::RSA::BigInt
 
   - Doh -- Alt's package name was Bigint not BigInt.
 
+  - Speed up testing for Calc backend (only do 384-bits in test 11 if not
+    using GMP or Pari backends).
+
+  - Switch to Bytes::Random::Secure's OO interface, and allow plugging in a
+    different irand function to the generator.
+
+  - Use the new generator interface in all tests.  The suite went from
+    3328 bits of blocking randomness to 1536.
+
+
 0.04 14 January 2012
 
   - Change from random_maurer_prime to random_nbit_prime.  This is much faster

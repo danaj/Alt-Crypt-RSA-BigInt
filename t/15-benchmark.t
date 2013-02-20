@@ -14,6 +14,8 @@ use Crypt::RSA::SS::PSS;
 use Crypt::RSA::SS::PKCS1v15;
 use Crypt::RSA::DataFormat qw(os2ip i2osp);
 use Benchmark;
+use Bytes::Random::Secure;
+my $randobj = Bytes::Random::Secure->new(NonBlocking=>1);
 
 my $count = shift || 5;
 
@@ -39,7 +41,13 @@ my ($pub, $priv) = readkeys();
 my $keygen = new Crypt::RSA::Key;
 
 my ($pub2, $priv2) =
-$keygen->generate ( Size => 512, Verbosity => 0, Password => 'sdfd', Identity => 'sdsdf' );
+$keygen->generate (
+  Size => 512,
+  Verbosity => 0,
+  Password => 'sdfd',
+  Identity => 'sdsdf',
+  RandomSub => sub{ $randobj->irand() },
+);
 
 my ($sig, $sigpkcs);
 

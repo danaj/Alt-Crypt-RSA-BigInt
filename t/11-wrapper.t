@@ -11,7 +11,12 @@ use warnings;
 use Test::More;
 use Crypt::RSA;
 
-plan tests => 3 * 4;
+my $bigintlib = Math::BigInt->config()->{lib};
+my @keysizes = ($bigintlib =~ /^Math::BigInt::(GMP|Pari)$/)
+             ? (384, 512, 1536)
+             : (384);            # Calc is too slow
+
+plan tests => 4 * scalar @keysizes;
 
 my $rsa = new Crypt::RSA;
 
@@ -49,11 +54,7 @@ my $plaintext =<<'EOM';
 
 EOM
 
-my $bigintlib = Math::BigInt->config()->{lib};
-$bigintlib =~ s/^Math::BigInt:://;
-my $largesize = ($bigintlib =~ /^(GMP|Pari)$/) ? 1536 : 768;
-
-for my $keysize (384,512,$largesize) {
+for my $keysize (@keysizes) {
 
     # $plaintext = "" if $keysize == 512;
 

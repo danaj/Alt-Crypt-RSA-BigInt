@@ -11,6 +11,8 @@ use Crypt::RSA::Key;
 use Crypt::RSA::SS::PKCS1v15;
 use Crypt::RSA::Key::Public;
 use Crypt::RSA::Key::Private;
+use Bytes::Random::Secure;
+my $randobj = Bytes::Random::Secure->new(NonBlocking=>1);
 
 plan tests => 14;
 
@@ -29,6 +31,7 @@ my ($pub, $priv) = Crypt::RSA::Key->new->generate  (
                         Size => 768,
                         Identity => 'i am i',
                         Password => 'guess me',
+                        RandomSub => sub{ $randobj->irand() },
                     );
 
 foreach my $hash (qw(MD2 MD5 SHA1 SHA224 SHA256 SHA384 SHA512)) {

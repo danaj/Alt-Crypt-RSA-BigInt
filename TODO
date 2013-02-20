@@ -20,3 +20,5 @@
 
  - t/90-release-perlcritic.t
    t/92-release-pod-coverage.t
+
+ - The test suite is still using a lot of randomness.  Find a way to reduce it.
