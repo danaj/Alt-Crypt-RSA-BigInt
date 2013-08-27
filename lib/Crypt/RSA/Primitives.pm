@@ -118,7 +118,7 @@ Crypt::RSA::Primitives - RSA encryption, decryption, signature and verification 
 =head1 DESCRIPTION
 
 This module implements RSA encryption, decryption, signature and
-verfication primitives. These primitives should only be used in the
+verification primitives. These primitives should only be used in the
 context of an encryption or signing scheme. See Crypt::RSA::ES::OAEP(3),
 and Crypt::RSA::SS::PSS(3) for the implementation of two such schemes.
 

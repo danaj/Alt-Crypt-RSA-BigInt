@@ -280,7 +280,7 @@ padding. (See the note on Security of Padding Schemes.)
 The key generation engine and other functions that work on both components
 of the key-pair are encapsulated in Crypt::RSA::Key(3).
 Crypt::RSA::Key::Public(3) & Crypt::RSA::Key::Private(3) provide
-mechanisms for storage & retrival of keys from disk, decoding & encoding
+mechanisms for storage & retrieval of keys from disk, decoding & encoding
 of keys in certain formats, and secure representation of keys in memory.
 Finally, the Crypt::RSA module provides a convenient, DWIM wrapper around
 the rest of the modules in the bundle.
@@ -350,7 +350,7 @@ compatible object.
 =item B<Armour>
 
 A boolean parameter that forces cyphertext through a post processor after
-encrpytion. The default post processor is Convert::ASCII::Armour(3) that
+encryption. The default post processor is Convert::ASCII::Armour(3) that
 encodes binary octets in 6-bit clean ASCII messages. The cyphertext is
 returned as-is, when the Armour key is not present.
 

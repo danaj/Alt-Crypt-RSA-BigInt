@@ -90,8 +90,8 @@ returning.
 
 The caller should B<never> call errstr() to check for errors. errstr()
 should be called only when a method indicates (usually through an undef
-return value) that an error has occured. This is because errstr() is
-never overwritten and will always contain a value after the occurance of
+return value) that an error has occurred. This is because errstr() is
+never overwritten and will always contain a value after the occurence of
 first error.
 
 =head1 METHODS
@@ -105,7 +105,7 @@ Barebones constructor.
 =item B<error($mesage, ($wipeme, $wipemetoo))>
 
 The first argument to error() is $message which is placed in $self-
->{errstr} and the remaining arguments are interpretted as
+>{errstr} and the remaining arguments are interpreted as
 variables containing sensitive data that are wiped out from the
 memory. error() always returns undef.
 

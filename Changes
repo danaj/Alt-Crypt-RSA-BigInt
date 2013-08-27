@@ -1,5 +1,9 @@
 Revision history for Perl module Alt::Crypt::RSA::BigInt
 
+0.06 ?
+
+  - Typo fixes from dsteinbrunner.
+
 0.05 21 January 2012
 
   - Fixed some perlcritic issues -- mainly returning undef and changing to the
