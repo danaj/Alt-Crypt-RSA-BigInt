@@ -1,10 +1,10 @@
 Revision history for Perl module Alt::Crypt::RSA::BigInt
 
-0.06 ?
+0.06  2013-09
 
   - Typo fixes from dsteinbrunner.
 
-0.05 21 January 2012
+0.05  2013-02-22
 
   - Fixed some perlcritic issues -- mainly returning undef and changing to the
     three argument open using a lexical file handle.
@@ -21,7 +21,7 @@ Revision history for Perl module Alt::Crypt::RSA::BigInt
     3328 bits of blocking randomness to 1536.
 
 
-0.04 14 January 2012
+0.04  2013-01-14
 
   - Change from random_maurer_prime to random_nbit_prime.  This is much faster
     and yields more possible primes (Maurer's algorithm only outputs about 10%
@@ -37,7 +37,7 @@ Revision history for Perl module Alt::Crypt::RSA::BigInt
     systems were timing out (e.g. ActiveState).
 
 
-0.03 30 December 2012
+0.03  2012-12-30
 
   - Add tests for SHA384 and SHA512.
 
@@ -65,7 +65,7 @@ Revision history for Perl module Alt::Crypt::RSA::BigInt
     to be added to the dependency list.
 
 
-0.02 28 December 2012
+0.02  2012-12-28
 
   - Fix a decrypt issue setting keys
 
@@ -78,7 +78,7 @@ Revision history for Perl module Alt::Crypt::RSA::BigInt
   - Make pretty maurer prime generation output with Verbosity.
 
 
-0.01 28 December 2012
+0.01  2012-12-28
 
   - Add test for h2osp, pss sign and verify with salt.
 

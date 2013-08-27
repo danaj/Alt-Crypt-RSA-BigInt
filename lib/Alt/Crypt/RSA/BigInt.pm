@@ -31,7 +31,7 @@ GMP and Pari backends.
 
 =head1 PERFORMANCE
 
-Performance using GMP is 3-10 times faster than the Crypt::RSA 1.99.
+Performance using GMP is 3-10 times faster than Crypt::RSA 1.99.
 
 Using Math::BigInt::Pari, it is about half the speed at signing, and
 on par when verifying.
