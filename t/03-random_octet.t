@@ -10,11 +10,11 @@ use warnings;
 
 use Test::More;
 use Crypt::RSA;
-use Bytes::Random::Secure qw/random_bytes/;
+use Math::Prime::Util qw/random_bytes/;
 
 plan tests => 3;
 
 for my $len (qw/10 512 1024/) {
     my $ro = random_bytes($len);
-    is(length($ro), $len, "BRS random_bytes($len) creates $len bytes");
+    is(length($ro), $len, "random_bytes($len) creates $len bytes");
 }

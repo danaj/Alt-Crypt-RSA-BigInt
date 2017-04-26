@@ -24,7 +24,7 @@ unresolved until future versions.
 Math::Pari is completely removed.  This includes the two modules:
 
    - Crypt::Primes   =>   Math::Prime::Util
-   - Crypt::Random   =>   Bytes::Random::Secure
+   - Crypt::Random   =>   Math::Prime::Util
 
 All operations are now performed using Math::BigInt, and prefer the
 GMP and Pari backends.

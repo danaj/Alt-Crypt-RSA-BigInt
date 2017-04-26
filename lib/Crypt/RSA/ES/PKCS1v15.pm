@@ -9,15 +9,13 @@ use warnings;
 ## it under the same terms as Perl itself.
 
 use base 'Crypt::RSA::Errorhandler';
-use Bytes::Random::Secure  qw/random_bytes random_string_from/;
+use Math::Prime::Util qw/random_bytes/;
 use Crypt::RSA::DataFormat qw(bitsize octet_len os2ip i2osp);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug      qw(debug);
 use Carp;
 
 $Crypt::RSA::ES::PKCS1v15::VERSION = '1.99';
-
-my $nonzerobag = join('', map { chr($_) } (1..255));
 
 sub new { 
     my ($class, %params) = @_;
@@ -76,18 +74,14 @@ sub encode {
     my ($self, $M, $emlen) = @_; 
     $M = $M || ""; my $mlen = length($M);
     return $self->error ("Message too long.", \$M) if $mlen > $emlen-10;
-    my ($PS, $pslen) = ("", 0);
 
-    $pslen = $emlen-$mlen-2;
-
-    #$PS = '';
-    #while (length($PS) < $pslen) {
-    #  $PS .= random_bytes( $pslen - length($PS) );
-    #  $PS =~ s/\x00//g;
-    #}
-
-    $PS = random_string_from($nonzerobag, $pslen);
-
+    my $pslen = $emlen-$mlen-2;
+    # my $PS = join('', map { chr( 1+urandomm(255) ) } 1 .. $pslen);
+    my $PS = '';
+    while (length($PS) < $pslen) {
+      $PS .= random_bytes( $pslen - length($PS) );
+      $PS =~ s/\x00//g;
+    }
     my $em = chr(2).$PS.chr(0).$M;
     return $em;
 }

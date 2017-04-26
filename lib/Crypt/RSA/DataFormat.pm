@@ -11,7 +11,7 @@ use warnings;
 
 use vars qw(@ISA);
 use Math::BigInt try => 'GMP, Pari';
-use Bytes::Random::Secure qw/random_bytes/;
+use Math::Prime::Util qw/random_bytes/;
 use Digest::SHA qw(sha1);
 use Carp;
 

@@ -11,7 +11,6 @@ use warnings;
 use base 'Class::Loader';
 use base 'Crypt::RSA::Errorhandler';
 use Math::Prime::Util      qw(prime_set_config random_nbit_prime is_strong_pseudoprime primes);
-use Bytes::Random::Secure  qw(random_bytes);
 use Crypt::RSA::DataFormat qw(bitsize);
 use Math::BigInt try => 'GMP, Pari';
 use Crypt::RSA::Key::Private;
@@ -31,11 +30,6 @@ my %MODMAP = (
 sub new { 
     my $class = shift;
     my $self = {};
-    # Use one BRS object per key object.  It should be ok to re-use between
-    # keys, since BRS is a CSPRNG.  We could share one BRS object between all
-    # objects which would be a bit more efficient (that would be similar to
-    # using BRS's functional interface).
-    $self->{RandomObject} = Bytes::Random::Secure->new( Bits => 256 );
     bless $self, $class;
     $self->_storemap ( %MODMAP );
     return $self;
@@ -59,12 +53,6 @@ sub generate {
 
         my $size = int($params{Size}/2);  
         my $verbosity = $params{Verbosity} || 0;
-
-        my $randobj = $self->{RandomObject};
-        my $randsub = $params{RandomSub} || sub { $randobj->irand() };
-        return $self->error("RandomSub must be a CODE reference.")
-               unless ref($randsub) eq 'CODE';
-        prime_set_config( irand => $randsub );
 
         # Switch from Maurer prime to nbit prime, then add some more primality
         # testing.  This is faster and gives us a wider set of possible primes.
@@ -232,14 +220,6 @@ with Crypt::RSA::Key::Private(3).
 =item B<PKF> 
 
 Public Key Format. This option is like SKF but for the public key.
-
-=item B<RandomSub>
-
-A code reference that returns a 32-bit random number when called.  This will
-be used to generate random data for selecting the random primes needed for key
-generation.  The default source is almost always a good choice so you should
-never need to use this parameter for normal use.  It is specifically available
-for special needs such as selecting a non-blocking seed source for tests.
 
 =back
 

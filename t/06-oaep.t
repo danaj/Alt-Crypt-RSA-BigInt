@@ -11,8 +11,6 @@ use warnings;
 use Test::More;
 use Crypt::RSA::ES::OAEP;
 use Crypt::RSA::Key;
-use Bytes::Random::Secure;
-my $randobj = Bytes::Random::Secure->new(NonBlocking=>1);
 
 plan tests => 5;
 
@@ -47,7 +45,6 @@ my ($pub, $priv) = $keychain->generate (
   Size => $keysize,
   Password => 'xx',
   Identity => 'xx',
-  RandomSub => sub { $randobj->irand() },
   Verbosity => 1 );
 ok( ! $keychain->errstr, "No error from generate" );
 

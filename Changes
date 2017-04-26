@@ -1,8 +1,10 @@
 Revision history for Perl module Alt::Crypt::RSA::BigInt
 
-0.06  2013-09
+0.06  2017-?
 
   - Typo fixes from dsteinbrunner.
+
+  - Use new Math::Prime::Util with a CSPRNG, remove Bytes::Random::Secure.
 
 0.05  2013-02-22
 

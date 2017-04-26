@@ -5,8 +5,6 @@ use warnings;
 use Test::More;
 use Crypt::RSA::Key;
 use Data::Dumper;
-use Bytes::Random::Secure;
-my $randobj = Bytes::Random::Secure->new(NonBlocking=>1);
 
 plan tests => 3;
 
@@ -21,13 +19,12 @@ my ($pub, $pri) = $obj->generate(
    Password => 'guess',
    Size => 512,
    KF => 'SSH',
-   RandomSub => sub{ $randobj->irand() },
  );
 die $obj->errstr if $obj->errstr();
 my $n1 = $pub->n;
 my $s = $pub->serialize();
 
-my ($newpub, $newpri) = $obj->generate( Size => 128, KF => 'SSH', RandomSub => sub{ $randobj->irand() }, );
+my ($newpub, $newpri) = $obj->generate( Size => 128, KF => 'SSH', );
 my $n2 = $newpub->n;
 
 # Make sure we're not bonkers

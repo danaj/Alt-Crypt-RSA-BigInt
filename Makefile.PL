@@ -46,8 +46,7 @@ WriteMakefile1(
                     },
     PREREQ_PM    => {
                       'Math::BigInt'           => '1.78', # try => backend
-                      'Bytes::Random::Secure'  => '0.23', # object->irand
-                      'Math::Prime::Util'      => '0.17', # pluggable irand
+                      'Math::Prime::Util'      => '0.64', # built in csprng
                       'Carp'                   => 0,
                       'Exporter'               => 0,
                       'Crypt::CBC'             => '2.17',

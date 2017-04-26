@@ -9,7 +9,7 @@ use warnings;
 ## it under the same terms as Perl itself.
 
 use base 'Crypt::RSA::Errorhandler';
-use Bytes::Random::Secure qw/random_bytes/;
+use Math::Prime::Util qw/random_bytes/;
 use Crypt::RSA::DataFormat qw(octet_len os2ip i2osp octet_xor mgf1);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug qw(debug);

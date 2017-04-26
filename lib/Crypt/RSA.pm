@@ -548,12 +548,16 @@ Artistic of GPL suit you fine.
 
 =head1 SEE ALSO
 
-Crypt::RSA::Primitives(3), Crypt::RSA::DataFormat(3),
-Crypt::RSA::Errorhandler(3), Crypt::RSA::Debug(3),
-Crypt::CBC(3), Crypt::Blowfish(3),
-Tie::EncryptedHash(3), Convert::ASCII::Armour(3),
-Class::Loader(3),
-Math::Prime::Util, Bytes::Random::Secure.
+L<Crypt::RSA::Primitives>,
+L<Crypt::RSA::DataFormat>,
+L<Crypt::RSA::Errorhandler>,
+L<Crypt::RSA::Debug>,
+L<Crypt::CBC>,
+L<Crypt::Blowfish>,
+L<Tie::EncryptedHash>,
+L<Convert::ASCII::Armour>,
+L<Class::Loader>,
+L<Math::Prime::Util>.
 
 =head1 REPORTING BUGS
 

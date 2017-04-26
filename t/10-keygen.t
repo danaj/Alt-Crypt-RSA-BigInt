@@ -10,8 +10,6 @@ use warnings;
 
 use Test::More;
 use Crypt::RSA::Key;
-use Bytes::Random::Secure;
-my $randobj = Bytes::Random::Secure->new(NonBlocking=>1);
 
 plan tests => 5 * 4;
 my $keychain = new Crypt::RSA::Key;
@@ -21,7 +19,6 @@ for my $ksize (qw(128 256 512 768 1024)) {
     my ($pub, $pri) = $keychain->generate( Identity => 'mail@vipul.net',
                                            Password => 'a day so foul and fair',
                                            #Verbosity => 1,
-                                           RandomSub=> sub{ $randobj->irand() },
                                            Size     => $ksize );
     ok( ! $keychain->errstr(), "Generated key (size $ksize) correctly" );
 
