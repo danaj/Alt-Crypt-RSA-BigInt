@@ -10,7 +10,7 @@ use warnings;
 
 use base 'Class::Loader';
 use base 'Crypt::RSA::Errorhandler';
-use Math::Prime::Util      qw(prime_set_config random_nbit_prime is_strong_pseudoprime primes);
+use Math::Prime::Util qw(random_nbit_prime miller_rabin_random is_frobenius_khashin_pseudoprime);
 use Crypt::RSA::DataFormat qw(bitsize);
 use Math::BigInt try => 'GMP, Pari';
 use Crypt::RSA::Key::Private;
@@ -56,7 +56,10 @@ sub generate {
 
         # Switch from Maurer prime to nbit prime, then add some more primality
         # testing.  This is faster and gives us a wider set of possible primes.
-        my @prplist = @{primes( 200 )};
+
+        # We really ought to consider the distribution.  See:
+        # https://crocs.fi.muni.cz/_media/public/papers/usenixsec16_1mrsakeys_trfimu_201603.pdf
+        # for comments on p/q selection.
 
         while (1) {
           my $p = random_nbit_prime($size);
@@ -64,24 +67,32 @@ sub generate {
           $p = Math::BigInt->new("$p") unless ref($p) eq 'Math::BigInt';
           $q = Math::BigInt->new("$q") unless ref($q) eq 'Math::BigInt';
 
+          # For unbiased rejection sampling, generate both p/q if size too small.
           next unless bitsize($p * $q) == $params{Size};
+
+          # Verify primes aren't too close together.
+          if ($params{Size} >= 256) {
+            my $threshold = Math::BigInt->new(2)->bpow($params{Size}/2 - 100);
+            my $diff = $p->copy->bsub($q)->babs;
+            next if $diff <= $threshold;
+          }
+
+          # We could check p-1 and q-1 smoothness.
 
           # p and q have passed the strong BPSW test, so it would be shocking
           # if they were not prime.  We'll add a few more tests because they're
           # cheap and we want to be extra careful, but also don't want to spend
-          # the time doing a full primality proof.  The results will have
-          # passed BPSW as well as being strong pseudoprimes to the first 46
-          # prime bases.
-          do { carp "$p passes BPSW but fails pseudoprime tests!"; next; }
-            unless is_strong_pseudoprime($p, @prplist);
-          do { carp "$q passes BPSW but fails pseudoprime tests!"; next; }
-            unless is_strong_pseudoprime($q, @prplist);
+          # the time doing a full primality proof.
 
-          # We could add some more conditions here.  Possibilities:
-          #  - make sure |p-q| is large enough.  With large bit sizes this is
-          #    exceedingly unlikely, but we could easily double check.
-          #  - run some trivial factoring tests, or check the smoothness of
-          #    p-1 and q-1.  Using random_strong_prime could also do this.
+          do { carp "$p passes BPSW but fails Frobenius test!"; next; }
+            unless is_frobenius_khashin_pseudoprime($p);
+          do { carp "$q passes BPSW but fails Frobenius test!"; next; }
+            unless is_frobenius_khashin_pseudoprime($q);
+
+          do { carp "$p fails Miller-Rabin testing!"; next; }
+            unless miller_rabin_random($p,3);
+          do { carp "$q fails Miller-Rabin testing!"; next; }
+            unless miller_rabin_random($q,3);
 
           $key = { p => $p, q => $q, e => Math::BigInt->new(65537) };
           last;

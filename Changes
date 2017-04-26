@@ -6,6 +6,12 @@ Revision history for Perl module Alt::Crypt::RSA::BigInt
 
   - Use new Math::Prime::Util with a CSPRNG, remove Bytes::Random::Secure.
 
+  - Add check in key gen for p/q distance (FIPS, ANSI), for size over 256.
+
+  - Use BPSW + Frobenius + 3 random-base M-R instead of BPSW + 46 fixed M-R.
+    No practical difference, but a little faster.
+
+
 0.05  2013-02-22
 
   - Fixed some perlcritic issues -- mainly returning undef and changing to the
