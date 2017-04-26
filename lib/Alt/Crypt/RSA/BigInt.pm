@@ -3,7 +3,7 @@ use strict;
 use warnings;
 BEGIN {
   $Alt::Crypt::RSA::BigInt::AUTHORITY = 'cpan:DANAJ';
-  $Alt::Crypt::RSA::BigInt::VERSION = '0.05';
+  $Alt::Crypt::RSA::BigInt::VERSION = '0.06';
 }
 
 =pod
