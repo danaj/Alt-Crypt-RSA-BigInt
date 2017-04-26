@@ -6,6 +6,8 @@ BEGIN {
   $Alt::Crypt::RSA::BigInt::VERSION = '0.06';
 }
 
+1;
+
 =pod
 
 =head1 NAME
