@@ -66,9 +66,11 @@ WriteMakefile1(
     # This should be worked on.  For now, no 5.6.x.
     MIN_PERL_VERSION => 5.008,
     META_MERGE   => {
+                      'meta-spec'  => { version => '2' },
+                      dynamic_config => 1,  # Check for GMP on install
                       no_index   => { directory => [qw(lib/Crypt)] },
                       resources  => {
-                         homepage   => 'https://github.com/danaj/Alt-Crypt-RSA-BigInt/tree',
+                         homepage   => 'https://github.com/danaj/Alt-Crypt-RSA-BigInt',
                          repository => 'git://github.com/danaj/Alt-Crypt-RSA-BigInt.git',
                        },
                       recommends => {
@@ -82,6 +84,10 @@ sub WriteMakefile1 {   # Cribbed from eumm-upgrade by Alexandr Ciornii
   my $eumm_version = $ExtUtils::MakeMaker::VERSION;
   $eumm_version = eval $eumm_version;
 
+  if ($params{TEST_REQUIRES} and $eumm_version < 6.6303) {
+      $params{BUILD_REQUIRES}={ %{$params{BUILD_REQUIRES} || {}} , %{$params{TEST_REQUIRES}} };
+      delete $params{TEST_REQUIRES};
+  }
   if ($params{BUILD_REQUIRES} and $eumm_version < 6.5503) {
       #EUMM 6.5502 has problems with BUILD_REQUIRES
       $params{PREREQ_PM}={ %{$params{PREREQ_PM} || {}} , %{$params{BUILD_REQUIRES}} };
